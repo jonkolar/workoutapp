@@ -25,6 +25,7 @@ class WorkoutSerializer(serializers.ModelSerializer):
         model = Workout
         fields =  (
             "id",
+            "user_id",
             "name",
             "exercises"
         )
