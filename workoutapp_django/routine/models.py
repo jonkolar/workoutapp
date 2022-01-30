@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import CustomUser
 
 # Create your models here.
 
@@ -17,7 +17,7 @@ class Exercise(models.Model):
         return self.name
 
 class Workout(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name="user")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1, related_name="user")
     name = models.CharField(max_length=150)
     date_added = models.DateTimeField(auto_now_add=True)
 
