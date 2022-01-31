@@ -20,6 +20,9 @@
       <div class="alert alert-danger" role="alert" v-for="error in errors">
         {{error}}
       </div>
+      <div class="alert alert-success" role="alert" id="register-success-alert" style="display: none">
+        You have succesfully registered!
+      </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
@@ -44,6 +47,8 @@ export default {
   },
   methods: {
       submitRegistration() {
+
+        $('#register-success-alert').hide()
         this.errors = []
 
         if (this.password1 !== this.password2){
@@ -53,10 +58,17 @@ export default {
         if (this.errors.length == 0){
           axios.post(`/api/v1/users/`, {
             username: this.username,
-            password: this.password1
+            password: this.password1,
+            email: this.email
           })
           .then((response) => {
             console.log(response)
+
+            $('#register-success-alert').show()
+            this.username = ""
+            this.password1 = ""
+            this.password2 = ""
+            this.email = ""
           })
           .catch((error) => {
             for (const property in error.response.data) {
