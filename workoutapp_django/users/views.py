@@ -28,6 +28,6 @@ class LoginUser(APIView):
 
         if user is not None:
             login(request, user)
-            return Response("Login Success")
+            return Response(user.username + " is authenticated")
         else:
             return Response("invalid credentials")

@@ -5,6 +5,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password')
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
     
     def create(self, validated_data):
         password = validated_data.pop('password')
@@ -12,3 +15,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email=value.lower()).exists():
+            raise serializers.ValidationError("User with this email already exists")
+        return value.lower()
