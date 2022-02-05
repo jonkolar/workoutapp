@@ -8,9 +8,6 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         self.email = self.email.lower()
         return super(CustomUser, self).save(*args, **kwargs)
-
-    def get_by_natural_key(self, username):
-        return self.get(username__iexact=username)
     
     def __str__(self):
         return self.username
