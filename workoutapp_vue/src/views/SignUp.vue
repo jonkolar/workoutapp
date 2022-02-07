@@ -56,7 +56,7 @@ export default {
         }
 
         if (this.errors.length == 0){
-          axios.post(`/api/v1/users/`, {
+          axios.post(`/api/user/register/`, {
             username: this.username,
             password: this.password1,
             email: this.email
