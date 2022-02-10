@@ -46,25 +46,12 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-]
-
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
-
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = "None"
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = "None"
-CORS_ALLOW_CREDENTIALS = True
-SESSION_COOKIE_DOMAIN="localhost:8080"
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
