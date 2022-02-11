@@ -21,18 +21,3 @@ class RegisterUser(CreateAPIView):
         permissions.AllowAny # Or anon users can't register
     ]
     serializer_class = RegistrationSerializer
-
-class LoginUser(APIView):
-    def post(self, request):
-        data = loads(request.body)
-        username = data['username']
-        password = data['password']
-
-        user = authenticate(username=username, password=password)
-
-        if user is not None:
-            login(request, user)
-            request.session.set_expiry(86400)
-            return Response(user.username + " is authenticated")
-        else:
-            return HttpResponseBadRequest("invalid username or password provided")

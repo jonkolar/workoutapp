@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from workoutapp_django.users.views import User
 from .models import CustomUser
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -25,3 +27,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         if CustomUser.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError("User with this email already exists")
         return value
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'

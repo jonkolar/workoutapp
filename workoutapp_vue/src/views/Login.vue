@@ -33,34 +33,20 @@ export default {
       }
   },
   methods: {
-      getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-              const cookie = cookies[i].trim();
-              // Does this cookie string begin with the name we want?
-              if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                  break;
-              }
-            }
-        }
-        console.log(cookieValue)
-        return cookieValue;
-     },
       submitLogin() {
         this.errors = []
 
         let data = {
             username: this.username,
             password: this.password,
-            'X-CSRFToken': this.getCookie('csrftoken')
         }
 
-        axios.post('/api/user/login/', data)
+        axios.post('/api/token/', data)
         .then((response) => {
           console.log(response)
+
+          axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
+          this.$store.commit('authenticated', response.data.access, response.data.refresh)
         })
       },
   }
