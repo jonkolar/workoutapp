@@ -17,7 +17,8 @@ export default createStore({
     deauthenticated(state) {
       state.accessToken = ""
       localStorage.removeItem('accessToken');
-      state.refreshToken = "refreshToken"
+      state.refreshToken = ""
+      localStorage.removeItem('refreshToken');
       state.isAuthenticated = false
     },
     initializeStore(state) {

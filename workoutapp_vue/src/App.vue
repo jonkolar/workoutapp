@@ -1,9 +1,14 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/sign-up">Register</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/my-workouts">MyWorkouts</router-link>
+      <router-link to="/">Home</router-link> |
+    <template v-if="$store.state.isAuthenticated">
+      <router-link to="/my-workouts">MyWorkouts</router-link> |
+      <button @click="logout">Logout</button>
+    </template>
+    <template v-else>
+      <router-link to="/sign-up">Register</router-link> |
+      <router-link to="/login">Login</router-link>
+    </template>
   </div>
   <router-view/>
 </template>
@@ -27,6 +32,15 @@ export default {
     } else {
       axios.defaults.headers.common['Authorization'] = ""
     }
+  },
+  methods: {
+    logout() {
+        axios.defaults.headers.common["Authorization"] = ""
+
+        this.$store.commit('deauthenticated')
+
+        this.$router.push('/')
+        },
   }
 }
 </script>

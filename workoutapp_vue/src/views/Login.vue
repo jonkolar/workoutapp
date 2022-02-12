@@ -45,6 +45,8 @@ export default {
         .then((response) => {
           axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
           this.$store.commit('authenticated', response.data.access, response.data.refresh)
+
+          this.$router.push('/')
         })
       },
   }
