@@ -19,9 +19,10 @@ export default {
       
   },
   mounted() {
+      console.log(axios.defaults.headers.common['Authorization'])
       axios.get('/api/workout/spirks/1/')
         .then((response) => {
-          console.log(response)
+
         })
   }
 }

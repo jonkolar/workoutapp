@@ -8,6 +8,30 @@
   <router-view/>
 </template>
 
+<script>
+import axios from 'axios'
+
+export default {
+  data () {
+    return {
+      showMobileMenu: false,
+    }
+  },
+  beforeCreate(){
+    this.$store.commit('initializeStore')
+
+    const token = this.$store.state.accessToken
+
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = "Bearer " + token
+    } else {
+      axios.defaults.headers.common['Authorization'] = ""
+    }
+  }
+}
+</script>
+
+
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

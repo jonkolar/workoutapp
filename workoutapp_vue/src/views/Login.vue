@@ -43,8 +43,6 @@ export default {
 
         axios.post('/api/token/', data)
         .then((response) => {
-          console.log(response)
-
           axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
           this.$store.commit('authenticated', response.data.access, response.data.refresh)
         })
