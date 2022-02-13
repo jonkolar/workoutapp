@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import SignUp from '../views/SignUp.vue'
 import Login from '../views/Login.vue'
 import MyWorkouts from '../views/MyWorkouts.vue'
+import CreateWorkout from '../views/CreateWorkout.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/my-workouts',
     name: 'MyWorkouts',
     component: MyWorkouts
+  },
+  {
+    path: '/create-workout',
+    name: 'CreateWorkout',
+    component: CreateWorkout
   }
 ]
 
