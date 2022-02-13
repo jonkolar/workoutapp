@@ -8,6 +8,10 @@ class SetSerializer(serializers.ModelSerializer):
         
 
 class WorkoutExerciseSerializer(serializers.ModelSerializer):
+    exercise = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='name'
+    )
     sets = SetSerializer(many=True)
     class Meta:
         model = WorkoutExercise

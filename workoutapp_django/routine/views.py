@@ -15,7 +15,6 @@ from rest_framework.renderers import JSONRenderer
 
 # Create your views here.
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def GetUserWorkouts(request, username, workout_id):
@@ -23,6 +22,16 @@ def GetUserWorkouts(request, username, workout_id):
     workout = Workout.objects.get(user_id=user.id)
     workout_serialized = WorkoutSerializer(workout)
     return Response(workout_serialized.data)
+
+class GetAllUserWorkouts(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        all_user_workouts = Workout.objects.filter(user_id=request.user.id)
+        all_user_workouts_serialized = WorkoutSerializer(all_user_workouts, many=True)
+        return Response(all_user_workouts_serialized.data)
+
 
 
 
