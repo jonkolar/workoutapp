@@ -5,13 +5,22 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title">New Exercise</h5>
+          <span>
+            <i class="bi bi-x-square" @click="close"></i>
+          </span>
       </div>
       <div class="modal-body">
-        <p>Modal body text goes here.</p>
+        <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
+          <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="categorySelect">Category</label>
+            </div>
+              <select class="custom-select" id="categorySelect" @click="populateCategories" v-model="category">
+                <option selected>Choose...</option>
+              </select>
+            </div>
+          </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary">Save changes</button>
@@ -26,12 +35,31 @@
 
 
 <script>
+import axios from 'axios'
+
 export default {
     name: 'AddExerciseWindow',
+    data() {
+      return {
+        category: ""
+      }
+    },
+    mounted() {
+      // Populate Categories
+      axios.get('/api/workouts/categorys/all')
+          .then((response) => {
+            for(let i = 0; i < response.data.length; i++){
+              $('#categorySelect').append($('<option>', {
+                value: response.data[i].id,
+                text: response.data[i].name
+              }));
+            }
+          })
+    },
     methods: {
         close () {
             this.$emit('closeAddExerciseWindow', false)
-        }
+        },
     }
 }
 </script>

@@ -5,8 +5,8 @@
         <label for="workout-name" class="form-label">Name:</label>
         <input type="text" v-model="name" class="form-control" id="workout-name" required>
       </div>
-      <div @click="toggleAddExerciseWindow(true)">
-        <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px"></i>
+      <div>
+        <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleAddExerciseWindow(true)"></i>
       </div>
       
       <div v-if="showAddExerciseWindow">
