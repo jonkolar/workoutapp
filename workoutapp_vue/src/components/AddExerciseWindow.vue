@@ -12,15 +12,16 @@
       </div>
       <div class="modal-body">
         <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
-          <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <label class="input-group-text" for="categorySelect">Category</label>
-            </div>
-              <select class="custom-select" id="categorySelect" @click="populateCategories" v-model="category">
-                <option selected>Choose...</option>
-              </select>
-            </div>
-          </form>
+          <label for="categorySelect">Category:</label>
+          <select class="form-select" id="categorySelect" @change="populateExercises">
+          </select>
+        </form>
+        <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
+          <label for="exerciseSelect">Exercise:</label>
+          <select class="form-select" id="exerciseSelect">
+            <option selected>Select a Category...</option>
+          </select>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary">Save changes</button>
@@ -41,7 +42,8 @@ export default {
     name: 'AddExerciseWindow',
     data() {
       return {
-        category: ""
+        category: "",
+        exercise: ""
       }
     },
     mounted() {
@@ -60,6 +62,18 @@ export default {
         close () {
             this.$emit('closeAddExerciseWindow', false)
         },
+        populateExercises() {
+          let categoryID = $('#categorySelect').find(":selected").val()
+          $('#exerciseSelect').empty()
+          axios.get(`/api/workout/exercises/${categoryID}`)
+              .then((response) => {
+                for(let i = 0; i < response.data.length; i++){
+                  $('#exerciseSelect').append($('<option>', {
+                    text: response.data[i].name
+                  }));
+                }
+              })
+       },
     }
 }
 </script>

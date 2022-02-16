@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Category, Workout
-from .serializers import WorkoutSerializer, CategorySerializer
+from .models import Category, Workout, Exercise
+from .serializers import WorkoutSerializer, CategorySerializer, ExerciseSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
@@ -37,6 +37,12 @@ class GetAllCategories(APIView):
         all_categories = Category.objects.all()
         all_categories_serialized = CategorySerializer(all_categories, many=True)
         return Response(all_categories_serialized.data)
+
+class GetExercises(APIView):
+    def get(self, request, category):
+        exercises = Exercise.objects.filter(category=category)
+        exercises_serialized = ExerciseSerializer(exercises, many=True)
+        return Response(exercises_serialized.data)
 
 
 
