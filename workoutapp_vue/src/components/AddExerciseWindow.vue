@@ -15,12 +15,22 @@
           <label for="categorySelect">Category:</label>
           <select class="form-select" id="categorySelect" @change="populateExercises">
           </select>
-        </form>
-        <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
+          <br>
           <label for="exerciseSelect">Exercise:</label>
           <select class="form-select" id="exerciseSelect">
-            <option selected>Select a Category...</option>
           </select>
+          <br>
+          <label for="orderSelect">Order</label>
+          <select class="form-select" id="orderSelect">
+          </select>
+          <br>
+
+          <NewSetInput
+            v-for="set in sets"
+            v-bind:setNumber="set.order"
+            v-bind:reps="set.reps"
+            v-bind:description="set.description" />
+
         </form>
       </div>
       <div class="modal-footer">
@@ -37,13 +47,18 @@
 
 <script>
 import axios from 'axios'
+import NewSetInput from '@/components/NewSetInput'
 
 export default {
     name: 'AddExerciseWindow',
+    components: {
+      NewSetInput,
+    },
     data() {
       return {
         category: "",
-        exercise: ""
+        exercise: "",
+        sets: []
       }
     },
     mounted() {
@@ -57,6 +72,31 @@ export default {
               }));
             }
           })
+
+      // Populate Exercises
+      axios.get(`/api/workout/exercises/1`)
+            .then((response) => {
+              for(let i = 0; i < response.data.length; i++){
+                $('#exerciseSelect').append($('<option>', {
+                  text: response.data[i].name
+                }));
+              }
+            })
+      
+      // Populate Order Dropdown with 1-99
+      for(let i = 1; i < 100; i++){
+              $('#orderSelect').append($('<option>', {
+                text: i,
+                value: i
+               }))}
+
+      // Add First Set
+      let firstSet = {
+        order: 1,
+        reps: 7,
+        description: ""
+      }
+      this.sets.push(firstSet)
     },
     methods: {
         close () {
