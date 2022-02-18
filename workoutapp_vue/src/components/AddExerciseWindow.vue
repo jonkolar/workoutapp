@@ -31,6 +31,8 @@
             v-bind:reps="set.reps"
             v-bind:description="set.description" />
 
+          <button type="button" class="btn btn-dark" @click="addSet">Add Set</button>
+
         </form>
       </div>
       <div class="modal-footer">
@@ -89,14 +91,6 @@ export default {
                 text: i,
                 value: i
                }))}
-
-      // Add First Set
-      let firstSet = {
-        order: 1,
-        reps: 7,
-        description: ""
-      }
-      this.sets.push(firstSet)
     },
     methods: {
         close () {
@@ -114,6 +108,14 @@ export default {
                 }
               })
        },
+       addSet() {
+         this.sets.push({
+           order: this.sets.length + 1,
+           reps: 0,
+           description: ""
+         })
+         console.log(this.sets)
+       }
     }
 }
 </script>

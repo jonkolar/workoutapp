@@ -1,17 +1,15 @@
 <template>
-<h3>Set {{ setNumber }}:</h3>
+<h4>Set {{ setNumber }}:</h4>
 <div class="d-flex flex-row">
   <div>
-    <label for="repsSelect">Reps</label>
-    <select class="form-select" id="repsSelect">
-    </select>
+    <label for="reps">Reps:</label>
+    <input class="form-control" type="text" v-model="reps" id="reps" >
     <br>
-    <label for="description">Description</label>
-    <input class="form-control" type="text" placeholder="Description" id="description">
+    <label for="description">Description:</label>
+    <input class="form-control" type="text" v-model="description" id="description">
    </div>
 </div>
-
-
+<br>
 </template>
 
 
@@ -31,13 +29,7 @@ export default {
       }
     },
     mounted() {
-        // Populate Reps Dropdown with 1-99
-        for(let i = 1; i < 100; i++){
-              $('#repsSelect').append($('<option>', {
-                text: i,
-                value: i
-               }))}
-        $('#repsSelect').val(this.reps)
+
     }
 }
 </script>
