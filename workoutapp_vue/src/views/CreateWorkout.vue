@@ -34,9 +34,7 @@ export default {
   },
   data () {
       return {
-        name: "",
         showAddExerciseWindow: false,
-        exercises: []
       }
   },
   methods: {
@@ -44,7 +42,6 @@ export default {
           this.showAddExerciseWindow = bool
       },
       addExercise(event) {
-          console.log("HEY")
           $('#create-workout-modal').show();
       }
   },

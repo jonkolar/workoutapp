@@ -4,7 +4,11 @@ export default createStore({
   state: {
     isAuthenticated: false,
     accessToken: '',
-    refreshToken: ''
+    refreshToken: '',
+    newWorkout: {
+      name: "",
+      exercises: []
+    }
   },
   mutations: {
     authenticated(state, access, refresh) {
@@ -38,7 +42,7 @@ export default createStore({
     },
   },
   actions: {
-
+    
   },
   modules: {
   }

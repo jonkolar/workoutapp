@@ -11,6 +11,9 @@
           </span>
       </div>
       <div class="modal-body">
+
+        <button type="button" class="btn btn-dark" @click="checkSetsDev">DEV CHECK SETS CONSOLE</button>
+
         <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
           <label for="categorySelect">Category:</label>
           <select class="form-select" id="categorySelect" @change="populateExercises">
@@ -27,9 +30,8 @@
 
           <NewSetInput
             v-for="set in sets"
-            v-bind:setNumber="set.order"
-            v-bind:reps="set.reps"
-            v-bind:description="set.description" />
+            v-bind:setNumber="set.setNumber"
+            @updateSetReps="updateSetReps" />
 
           <button type="button" class="btn btn-dark" @click="addSet">Add Set</button>
 
@@ -60,6 +62,7 @@ export default {
       return {
         category: "",
         exercise: "",
+        order: 0,
         sets: []
       }
     },
@@ -110,10 +113,15 @@ export default {
        },
        addSet() {
          this.sets.push({
-           order: this.sets.length + 1,
+           setNumber: this.sets.length + 1,
            reps: 0,
            description: ""
          })
+       },
+       updateSetReps(setNumber, newReps){
+         this.sets[setNumber - 1].reps = newReps
+       },
+       checkSetsDev() {
          console.log(this.sets)
        }
     }
