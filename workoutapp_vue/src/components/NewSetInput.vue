@@ -6,7 +6,7 @@
     <input class="form-control" type="text" id="reps" @change="updateReps" v-model="reps" >
     <br>
     <label for="description">Description:</label>
-    <input class="form-control" type="text" id="description">
+    <input class="form-control" type="text" id="description" @change="updateDescription" v-model="description" >
    </div>
 </div>
 <br>
@@ -21,15 +21,19 @@ export default {
     props: {
         setNumber: Number,
     },
-    emits: ["updateSetReps"],
+    emits: ["updateSetReps", "updateSetDescription"],
     data() {
       return {
-        reps: 0
+        reps: 0,
+        description: ""
       }
     },
     methods: {
       updateReps(){
         this.$emit('updateSetReps', this.setNumber, this.reps)
+      },
+      updateDescription(){
+        this.$emit('updateSetDescription', this.setNumber, this.description)
       }
     }
 }

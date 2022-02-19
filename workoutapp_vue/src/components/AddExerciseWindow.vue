@@ -16,11 +16,11 @@
 
         <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
           <label for="categorySelect">Category:</label>
-          <select class="form-select" id="categorySelect" @change="populateExercises">
+          <select class="form-select" id="categorySelect" @change="populateExercises" v-model="category">
           </select>
           <br>
           <label for="exerciseSelect">Exercise:</label>
-          <select class="form-select" id="exerciseSelect">
+          <select class="form-select" id="exerciseSelect" v-model="exercise">
           </select>
           <br>
           <label for="orderSelect">Order</label>
@@ -31,14 +31,15 @@
           <NewSetInput
             v-for="set in sets"
             v-bind:setNumber="set.setNumber"
-            @updateSetReps="updateSetReps" />
+            @updateSetReps="updateSetReps" 
+            @updateSetDescription="updateSetDescription" />
 
           <button type="button" class="btn btn-dark" @click="addSet">Add Set</button>
 
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" @click="addExercise">Save changes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">Close</button>
       </div>
     </div>
@@ -71,6 +72,7 @@ export default {
       axios.get('/api/workouts/categorys/all')
           .then((response) => {
             for(let i = 0; i < response.data.length; i++){
+              if (i == 0) { this.category = response.data[i].id }
               $('#categorySelect').append($('<option>', {
                 value: response.data[i].id,
                 text: response.data[i].name
@@ -82,6 +84,7 @@ export default {
       axios.get(`/api/workout/exercises/1`)
             .then((response) => {
               for(let i = 0; i < response.data.length; i++){
+                if (i == 1) { this.exercise = response.data[i].name }
                 $('#exerciseSelect').append($('<option>', {
                   text: response.data[i].name
                 }));
@@ -98,6 +101,14 @@ export default {
     methods: {
         close () {
             this.$emit('closeAddExerciseWindow', false)
+        },
+        addExercise() {
+            this.$emit('addExercise', {
+              category: this.category,
+              exercise: this.exercise,
+              order: this.order,
+              sets: this.sets
+            })
         },
         populateExercises() {
           let categoryID = $('#categorySelect').find(":selected").val()
@@ -120,6 +131,9 @@ export default {
        },
        updateSetReps(setNumber, newReps){
          this.sets[setNumber - 1].reps = newReps
+       },
+       updateSetDescription(setNumber, newDescription){
+         this.sets[setNumber - 1].description = newDescription
        },
        checkSetsDev() {
          console.log(this.sets)

@@ -1,6 +1,7 @@
 <template>
  <div>
     <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
+      <button type="button" class="btn btn-dark" @click="checkExercisesDev">DEV CHECK EXERCISES CONSOLE</button>
       <div class="mb-3">
         <label for="workout-name" class="form-label">Name:</label>
         <input type="text" v-model="name" class="form-control" id="workout-name" required>
@@ -11,7 +12,8 @@
       
       <div v-if="showAddExerciseWindow">
         <AddExerciseWindow 
-            @closeAddExerciseWindow="toggleAddExerciseWindow" />
+            @closeAddExerciseWindow="toggleAddExerciseWindow"
+            @addExercise="addExercise" />
       </div>
     </form>
 
@@ -34,6 +36,8 @@ export default {
   },
   data () {
       return {
+        name: "",
+        exercises: [],
         showAddExerciseWindow: false,
       }
   },
@@ -41,9 +45,13 @@ export default {
       toggleAddExerciseWindow(bool) {
           this.showAddExerciseWindow = bool
       },
-      addExercise(event) {
-          $('#create-workout-modal').show();
-      }
+      addExercise(newExercise) {
+        this.exercises.push(newExercise)
+      },
+      checkExercisesDev() {
+         console.log(this.exercises)
+       }
+
   },
 }
 </script>
