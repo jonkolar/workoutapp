@@ -14,19 +14,19 @@
 
         <button type="button" class="btn btn-dark" @click="checkSetsDev">DEV CHECK SETS CONSOLE</button>
 
-        <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
+        <form class="w-50 p-3 mx-auto" @submit.prevent="submitExercise">
           <label for="categorySelect">Category:</label>
-          <select class="form-select" id="categorySelect" @change="updateExerciseOptions($event.target.value)" v-model="selectedCategory" >
+          <select class="form-select" id="categorySelect" @change="updateExerciseOptions($event.target.value)" v-model="selectedCategory" required>
             <option value="" selected hidden>choose a category...</option>
-            <option v-for="category in categoryOptions" :value="category.value">
+            <option v-for="category in categoryOptions" :value="category.id">
               {{ category.name }}
             </option>
           </select>
           <br>
           <label for="exerciseSelect">Exercise:</label>
-          <select class="form-select" id="exerciseSelect" v-model="selectedExercise" :disabled="selectedCategory == ''">
+          <select class="form-select" id="exerciseSelect" v-model="selectedExercise" :disabled="selectedCategory == ''" required>
             <option value="" selected hidden>choose an exercise...</option>
-            <option v-for="exercise in exerciseOptions" :value="exercise.value">
+            <option v-for="exercise in exerciseOptions" :value="exercise.id">
               {{ exercise.name }}
             </option>
           </select>
@@ -50,7 +50,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" @click="addExercise">Save changes</button>
+        <button type="button" class="btn btn-primary" @click="submitExercise">Save changes</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="$emit('toggleWindow', false)">Close</button>
       </div>
     </div>
@@ -69,7 +69,7 @@ export default {
     components: {
       NewSetInput,
     },
-    emits: ['toggleWindow'],
+    emits: ['toggleWindow', 'addExercise'],
     data() {
       return {
         categoryOptions: [],
@@ -86,7 +86,7 @@ export default {
       .then((response) => {
         for(let i = 0; i < response.data.length; i++){
           this.categoryOptions.push({
-            value: response.data[i].id,
+            id: response.data[i].id,
             name: response.data[i].name
           })
         }
@@ -107,7 +107,7 @@ export default {
               .then((response) => {
                 for(let i = 0; i < response.data.length; i++){
                   this.exerciseOptions.push({
-                    value: i,
+                    id: response.data[i].id,
                     name: response.data[i].name
                   })
                 }
@@ -122,6 +122,19 @@ export default {
        },
        checkSetsDev() { // For Testing
          console.log(this.sets)
+         console.log(categoryNameFromOptions(1))
+       },
+       submitExercise() {
+         let newExercise = {
+           category: this.categoryOptions.find(category => category.id == this.selectedCategory),
+           exercise: this.exerciseOptions.find(exercise => exercise.id == this.selectedExercise),
+           order: this.order,
+           sets: this.sets
+         }
+
+         console.log(newExercise)
+
+         this.$emit('addExercise', newExercise)
        }
     }
 }

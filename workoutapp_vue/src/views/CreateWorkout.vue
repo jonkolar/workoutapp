@@ -6,9 +6,22 @@
         <label for="workout-name" class="form-label">Name:</label>
         <input type="text" v-model="name" class="form-control" id="workout-name" required>
       </div>
+
+      <div v-for="exercise in exercises" class="card mx-auto" style="width: 18rem;">
+        <div class="card-header">
+          <h5>{{exercise.order}}. {{ exercise.exercise.name }}</h5>
+          <small>{{exercise.category.name}}</small>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li v-for="set in exercise.sets" class="list-group-item">{{set.reps}} reps: {{ set.description }}</li>
+        </ul>
+      </div>
+
       <div>
         <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleAddExerciseWindow(true)"></i>
       </div>
+
+      <br>
       
       <div v-if="showAddExerciseWindow">
         <AddExerciseWindow 

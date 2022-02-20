@@ -44,6 +44,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exercise
         fields = (
+            "id",
             "name",
             "category"
         )
