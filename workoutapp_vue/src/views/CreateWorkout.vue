@@ -12,7 +12,7 @@
       
       <div v-if="showAddExerciseWindow">
         <AddExerciseWindow 
-            @closeAddExerciseWindow="toggleAddExerciseWindow"
+            @toggleWindow="toggleAddExerciseWindow"
             @addExercise="addExercise" />
       </div>
     </form>
@@ -48,7 +48,7 @@ export default {
       addExercise(newExercise) {
         this.exercises.push(newExercise)
       },
-      checkExercisesDev() {
+      checkExercisesDev() { // For Testing
          console.log(this.exercises)
        }
 
