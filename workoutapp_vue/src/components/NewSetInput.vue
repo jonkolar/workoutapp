@@ -3,7 +3,11 @@
 <div class="d-flex flex-row">
   <div>
     <label for="reps">Reps:</label>
-    <input class="form-control" type="text" id="reps" :value="reps" @input="$emit('update:reps', $event.target.value)" >
+    <select class="form-select" id="repsSelect" @change="$emit('update:reps', $event.target.value)" v-model="reps">
+      <option v-for="index in 100" :value="index">
+        {{index}}
+      </option>
+    </select>
     <br>
     <label for="description">Description:</label>
     <input class="form-control" type="text" id="description" :value="description" @input="$emit('update:description', $event.target.value)" >

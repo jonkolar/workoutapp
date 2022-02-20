@@ -16,21 +16,26 @@
 
         <form class="w-50 p-3 mx-auto" @submit.prevent="submitLogin">
           <label for="categorySelect">Category:</label>
-          <select class="form-select" id="categorySelect" @change="updateExerciseOptions($event.target.value)" v-model="selectedCategory">
+          <select class="form-select" id="categorySelect" @change="updateExerciseOptions($event.target.value)" v-model="selectedCategory" >
+            <option value="" selected hidden>choose a category...</option>
             <option v-for="category in categoryOptions" :value="category.value">
               {{ category.name }}
             </option>
           </select>
           <br>
           <label for="exerciseSelect">Exercise:</label>
-          <select class="form-select" id="exerciseSelect" v-model="selectedExercise">
+          <select class="form-select" id="exerciseSelect" v-model="selectedExercise" :disabled="selectedCategory == ''">
+            <option value="" selected hidden>choose an exercise...</option>
             <option v-for="exercise in exerciseOptions" :value="exercise.value">
               {{ exercise.name }}
             </option>
           </select>
           <br>
           <label for="orderSelect">Order</label>
-          <select class="form-select" id="orderSelect">
+          <select class="form-select" id="orderSelect" v-model="order">
+            <option v-for="index in 100" :value="index">
+              {{index}}
+            </option>
           </select>
           <br>
 
@@ -71,28 +76,21 @@ export default {
         exerciseOptions: [],
         selectedCategory: "",
         selectedExercise: "",
-        order: 0,
+        order: 1,
         sets: []
       }
     },
     mounted() {
       // Populate Categories
-          axios.get('/api/workouts/categorys/all')
-          .then((response) => {
-            for(let i = 0; i < response.data.length; i++){
-              this.categoryOptions.push({
-                value: response.data[i].id,
-                name: response.data[i].name
-              })
-            }
+      axios.get('/api/workouts/categorys/all')
+      .then((response) => {
+        for(let i = 0; i < response.data.length; i++){
+          this.categoryOptions.push({
+            value: response.data[i].id,
+            name: response.data[i].name
           })
-
-      // Populate Order Dropdown with 1-99
-      for(let i = 1; i < 100; i++){
-              $('#orderSelect').append($('<option>', {
-                text: i,
-                value: i
-               }))}
+        }
+      })
     },
     methods: {
         addExercise() {
@@ -104,7 +102,7 @@ export default {
             })
         },
         updateExerciseOptions(categoryId) {
-          $('#exerciseSelect').empty()
+          this.exerciseOptions = []
           axios.get(`/api/workout/exercises/${categoryId}`)
               .then((response) => {
                 for(let i = 0; i < response.data.length; i++){
@@ -118,12 +116,12 @@ export default {
        addSet() {
          this.sets.push({
            setNumber: this.sets.length + 1,
-           reps: 0,
+           reps: 1,
            description: ""
          })
        },
        checkSetsDev() { // For Testing
-         console.log(this.exerciseOptions)
+         console.log(this.sets)
        }
     }
 }
