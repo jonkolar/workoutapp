@@ -62,7 +62,7 @@ export default {
         this.exercises.push(newExercise)
       },
       checkExercisesDev() { // For Testing
-         console.log(this.exercises)
+         console.log(this.name)
        }
 
   },

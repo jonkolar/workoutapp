@@ -55,6 +55,7 @@
       </div>
     </div>
   </div>
+  <br>
 </div>
 
 
@@ -122,7 +123,6 @@ export default {
        },
        checkSetsDev() { // For Testing
          console.log(this.sets)
-         console.log(categoryNameFromOptions(1))
        },
        submitExercise() {
          let newExercise = {
@@ -132,9 +132,9 @@ export default {
            sets: this.sets
          }
 
-         console.log(newExercise)
-
          this.$emit('addExercise', newExercise)
+         this.$emit('toggleWindow', false)
+
        }
     }
 }

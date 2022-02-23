@@ -44,6 +44,10 @@ class GetExercises(APIView):
         exercises_serialized = ExerciseSerializer(exercises, many=True)
         return Response(exercises_serialized.data)
 
+class AddWorkout(APIView):
+    def post(self, request):
+        # ADD WORKOUT ENDPOINT
+        return Response("created workout")
 
 
 
