@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Category, Workout, Exercise
+from .models import Category, Workout, Exercise, WorkoutExercise
 from .serializers import WorkoutSerializer, CategorySerializer, ExerciseSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
@@ -44,10 +44,25 @@ class GetExercises(APIView):
         exercises_serialized = ExerciseSerializer(exercises, many=True)
         return Response(exercises_serialized.data)
 
-class AddWorkout(APIView):
+class CreateWorkout(APIView):
     def post(self, request):
-        # ADD WORKOUT ENDPOINT
+        createdWorkout = self.createWorkout(request.user, request.data['name'])
+        self.createWorkoutExercises(createdWorkout, request.data['exercises'])
         return Response("created workout")
+
+    def createWorkout(self, user, name):
+        newWorkout = Workout(user=user, name=name)
+        newWorkout.save()
+        return newWorkout
+
+    def createWorkoutExercises(self, workout, exercises):
+        newWorkoutExercises = []
+        for exercise in exercises:
+            exerciseInstance = Exercise.objects.get(id=exercise['exercise']['id'])
+            newWorkoutExercises.append(WorkoutExercise(workout=workout, exercise=exerciseInstance, order=exercise['order']))
+
+        WorkoutExercise.objects.bulk_create(newWorkoutExercises)
+
 
 
 

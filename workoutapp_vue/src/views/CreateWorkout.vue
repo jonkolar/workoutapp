@@ -34,7 +34,7 @@
       <br>
       <br>
 
-    <button type="submit" class="btn btn-primary">Create Workout</button>
+    <button type="submit" class="btn btn-primary" @click="createWorkout">Create Workout</button>
 </div>
 </template>
 
@@ -60,6 +60,16 @@ export default {
       },
       addExercise(newExercise) {
         this.exercises.push(newExercise)
+      },
+      createWorkout() {
+        console.log('hey')
+        axios.post(`/api/workout/create`, {
+            name: this.name,
+            exercises: this.exercises
+          })
+          .then((response) => {
+            console.log(response)
+          })
       },
       checkExercisesDev() { // For Testing
          console.log(this.name)
