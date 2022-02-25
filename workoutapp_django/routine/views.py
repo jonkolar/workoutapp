@@ -1,3 +1,4 @@
+from typing import Set
 from users.models import CustomUser
 
 from rest_framework.permissions import IsAuthenticated
@@ -7,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Category, Workout, Exercise, WorkoutExercise
+from .models import Category, Workout, Exercise, WorkoutExercise, Set
 from .serializers import WorkoutSerializer, CategorySerializer, ExerciseSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
@@ -56,12 +57,27 @@ class CreateWorkout(APIView):
         return newWorkout
 
     def createWorkoutExercises(self, workout, exercises):
-        newWorkoutExercises = []
         for exercise in exercises:
             exerciseInstance = Exercise.objects.get(id=exercise['exercise']['id'])
-            newWorkoutExercises.append(WorkoutExercise(workout=workout, exercise=exerciseInstance, order=exercise['order']))
 
-        WorkoutExercise.objects.bulk_create(newWorkoutExercises)
+            workoutExerciseInstance = WorkoutExercise(workout=workout, exercise=exerciseInstance, order=exercise['order'])
+            workoutExerciseInstance.save()
+
+            sets = []
+            for set in exercise['sets']:
+                print(set)
+                new_set = Set(workout_exercise=workoutExerciseInstance, description=set["description"], set_number=set["setNumber"], reps=set["reps"])
+                sets.append(new_set)
+
+            Set.objects.bulk_create(sets)
+
+
+           
+
+
+
+
+
 
 
 
