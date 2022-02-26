@@ -16,6 +16,7 @@
 
 <script>
 import axios from 'axios'
+import jwt_decode from "jwt-decode";
 
 export default {
   data () {
@@ -23,13 +24,20 @@ export default {
       showMobileMenu: false,
     }
   },
-  beforeCreate(){
+  created(){
     this.$store.commit('initializeStore')
 
     const token = this.$store.state.accessToken
 
     if (token) {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + token
+      let decodedToken = jwt_decode(token)
+      let tokenExpiryTime = new Date(decodedToken.exp * 1000)
+
+      if (tokenExpiryTime > Date.now()){
+        axios.defaults.headers.common['Authorization'] = "Bearer " + token
+      } else {
+        this.logout()
+      }
     } else {
       axios.defaults.headers.common['Authorization'] = ""
     }
