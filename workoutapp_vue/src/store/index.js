@@ -11,7 +11,7 @@ export default createStore({
     }
   },
   mutations: {
-    authenticated(state, access, refresh) {
+    authenticated(state, {access, refresh}) {
       state.accessToken = access
       localStorage.setItem("accessToken", access)
       state.refreshToken = refresh
@@ -45,5 +45,18 @@ export default createStore({
     
   },
   modules: {
+  },
+
+  getters: {
+    getIsAuthenticated(state) {
+      return state.isAuthenticated
+    },
+    getTokens(state) {
+      let tokenData = {
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken
+      }
+      return tokenData
+    }
   }
 })

@@ -4,6 +4,7 @@ import SignUp from '../views/SignUp.vue'
 import Login from '../views/Login.vue'
 import MyWorkouts from '../views/MyWorkouts.vue'
 import CreateWorkout from '../views/CreateWorkout.vue'
+import store from '@/store'
 
 const routes = [
   {
@@ -24,7 +25,15 @@ const routes = [
   {
     path: '/my-workouts',
     name: 'MyWorkouts',
-    component: MyWorkouts
+    component: MyWorkouts,
+    beforeEnter: (to, from, next) => { // Add Authenticated Guard to more Routes
+      if(!store.getters['getIsAuthenticated']) {
+        return next({
+          name: 'Login'
+        })
+      }
+      next()
+    }
   },
   {
     path: '/create-workout',
