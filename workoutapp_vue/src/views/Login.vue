@@ -42,12 +42,17 @@ export default {
         }
 
         axios.post('/api/token/', data)
-        .then((response) => {
-          this.$store.commit('authenticated', {access: response.data.access, refresh: response.data.refresh})
-          axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
+          .then((response) => {
+            this.$store.commit('authenticated', {access: response.data.access, refresh: response.data.refresh})
+            axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
 
-          this.$router.push('/')
-        })
+            this.$router.push('/')
+          })
+          .catch((error) => {
+              for (const property in error.response.data) {
+                this.errors.push(`${error.response.data[property]}`)
+              }
+            })
       },
   }
 }

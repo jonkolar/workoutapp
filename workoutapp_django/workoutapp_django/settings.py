@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
 
-    'routine',
     'users',
+    'routine',
 ]
 
 # Custom User Stuff

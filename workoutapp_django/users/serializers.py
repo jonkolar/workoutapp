@@ -1,7 +1,6 @@
 from rest_framework import serializers
-
-from workoutapp_django.users.views import User
-from .models import CustomUser
+from django.contrib.auth import get_user_model
+CustomUser = get_user_model()
 
 class RegistrationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,5 +29,5 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = '__all__'
