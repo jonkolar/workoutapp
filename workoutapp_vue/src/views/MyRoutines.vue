@@ -14,7 +14,7 @@ import axios from 'axios'
 import WorkoutCard from '@/components/WorkoutCard'
 
 export default {
-  name: 'MyWorkouts',
+  name: 'MyRoutines',
   components: {
     WorkoutCard
   },
@@ -27,10 +27,10 @@ export default {
       
   },
   mounted() {
-      axios.get('/api/workouts/user/all')
+      axios.get(`/api/routines/user/all`)
         .then((response) => {
           for(let i = 0; i < response.data.length; i++){
-            this.userWorkouts.push(response.data[i])
+            //this.userWorkouts.push(response.data[i])
           }
         })
   }

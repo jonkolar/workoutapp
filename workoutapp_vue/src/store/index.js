@@ -5,10 +5,6 @@ export default createStore({
     isAuthenticated: false,
     accessToken: '',
     refreshToken: '',
-    newWorkout: {
-      name: "",
-      exercises: []
-    }
   },
   mutations: {
     authenticated(state, {access, refresh}) {

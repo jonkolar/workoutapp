@@ -1,75 +1,78 @@
-from typing import Set
 from users.models import CustomUser
 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import Category, Workout, Exercise, WorkoutExercise, Set
-from .serializers import WorkoutSerializer, CategorySerializer, ExerciseSerializer
+from .models import RoutineCategory, UserRoutine, WorkoutCategory, UserWorkout, Exercise, UserExercise
+from .serializers import RoutineCategorySerializer, UserRoutineSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 
 # Create your views here.
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def GetUserWorkouts(request, username, workout_id):
-    user = CustomUser.objects.get(username=username)
-    workout = Workout.objects.get(user_id=user.id)
-    workout_serialized = WorkoutSerializer(workout)
-    return Response(workout_serialized.data)
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def GetUserWorkouts(request, username, workout_id):
+#     user = CustomUser.objects.get(username=username)
+#     workout = Workout.objects.get(user_id=user.id)
+#     workout_serialized = WorkoutSerializer(workout)
+#     return Response(workout_serialized.data)
 
-class GetAllUserWorkouts(APIView):
+class GetAllUserRoutines(APIView):
     authentication_Classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        all_user_workouts = Workout.objects.filter(user_id=request.user.id)
-        all_user_workouts_serialized = WorkoutSerializer(all_user_workouts, many=True)
-        return Response(all_user_workouts_serialized.data)
+        user_routines = UserRoutine.objects.filter(user_id=request.user.id, private=False) # do NOT send private routines
 
-class GetAllCategories(APIView):
-    def get(self, request):
-        all_categories = Category.objects.all()
-        all_categories_serialized = CategorySerializer(all_categories, many=True)
-        return Response(all_categories_serialized.data)
+        user_routines = UserRoutine.objects.filter(user_id=request.user.id)
+        
+        user_routines_serialized = UserRoutineSerializer(user_routines, many=True)
+        
+        return Response(user_routines_serialized.data)
 
-class GetExercises(APIView):
-    def get(self, request, category):
-        exercises = Exercise.objects.filter(category=category)
-        exercises_serialized = ExerciseSerializer(exercises, many=True)
-        return Response(exercises_serialized.data)
+# class GetAllCategories(APIView):
+#     def get(self, request):
+#         all_categories = Category.objects.all()
+#         all_categories_serialized = CategorySerializer(all_categories, many=True)
+#         return Response(all_categories_serialized.data)
 
-class CreateWorkout(APIView):
-    def post(self, request):
-        createdWorkout = self.createWorkout(request.user, request.data['name'])
-        self.createWorkoutExercises(createdWorkout, request.data['exercises'])
-        return Response("created workout")
+# class GetExercises(APIView):
+#     def get(self, request, category):
+#         exercises = Exercise.objects.filter(category=category)
+#         exercises_serialized = ExerciseSerializer(exercises, many=True)
+#         return Response(exercises_serialized.data)
 
-    def createWorkout(self, user, name):
-        newWorkout = Workout(user=user, name=name)
-        newWorkout.save()
-        return newWorkout
+# class CreateWorkout(APIView):
+#     def post(self, request):
+#         createdWorkout = self.createWorkout(request.user, request.data['name'])
+#         self.createWorkoutExercises(createdWorkout, request.data['exercises'])
+#         return Response("created workout")
 
-    def createWorkoutExercises(self, workout, exercises):
-        for exercise in exercises:
-            exerciseInstance = Exercise.objects.get(id=exercise['exercise']['id'])
+#     def createWorkout(self, user, name):
+#         newWorkout = Workout(user=user, name=name)
+#         newWorkout.save()
+#         return newWorkout
 
-            workoutExerciseInstance = WorkoutExercise(workout=workout, exercise=exerciseInstance, order=exercise['order'])
-            workoutExerciseInstance.save()
+#     def createWorkoutExercises(self, workout, exercises):
+#         for exercise in exercises:
+#             exerciseInstance = Exercise.objects.get(id=exercise['exercise']['id'])
 
-            sets = []
-            for set in exercise['sets']:
-                print(set)
-                new_set = Set(workout_exercise=workoutExerciseInstance, description=set["description"], set_number=set["setNumber"], reps=set["reps"])
-                sets.append(new_set)
+#             workoutExerciseInstance = WorkoutExercise(workout=workout, exercise=exerciseInstance, order=exercise['order'])
+#             workoutExerciseInstance.save()
 
-            Set.objects.bulk_create(sets)
+#             sets = []
+#             for set in exercise['sets']:
+#                 print(set)
+#                 new_set = Set(workout_exercise=workoutExerciseInstance, description=set["description"], set_number=set["setNumber"], reps=set["reps"])
+#                 sets.append(new_set)
+
+#             Set.objects.bulk_create(sets)
 
 
            

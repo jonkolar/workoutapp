@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import SignUp from '../views/SignUp.vue'
 import Login from '../views/Login.vue'
-import MyWorkouts from '../views/MyWorkouts.vue'
+import MyRoutines from '../views/MyRoutines.vue'
 import CreateWorkout from '../views/CreateWorkout.vue'
 import store from '@/store'
 
@@ -23,9 +23,9 @@ const routes = [
     component: Login
   },
   {
-    path: '/my-workouts',
-    name: 'MyWorkouts',
-    component: MyWorkouts,
+    path: '/my-routines',
+    name: 'MyRoutines',
+    component: MyRoutines,
     beforeEnter: (to, from, next) => { // Add Authenticated Guard to more Routes
       if(!store.getters['getIsAuthenticated']) {
         return next({
