@@ -1,26 +1,26 @@
 <template>
 
   <div class="container-fluid d-flex justify-content-center">
-    <WorkoutCard 
-      v-for="workout in userWorkouts"
-      v-bind:key="workout.id"
-      v-bind:workout="workout" />
+    <RoutineCard 
+      v-for="routine in userRoutines"
+      v-bind:key="routine.id"
+      v-bind:routine="routine" />
   </div>
 
 </template>
 
 <script>
 import axios from 'axios'
-import WorkoutCard from '@/components/WorkoutCard'
+import RoutineCard from '@/components/RoutineCard'
 
 export default {
   name: 'MyRoutines',
   components: {
-    WorkoutCard
+    RoutineCard
   },
   data () {
       return {
-        userWorkouts: [],
+        userRoutines: [],
       }
   },
   methods: {
@@ -30,7 +30,7 @@ export default {
       axios.get(`/api/routines/user/all`)
         .then((response) => {
           for(let i = 0; i < response.data.length; i++){
-            //this.userWorkouts.push(response.data[i])
+            this.userRoutines.push(response.data[i])
           }
         })
   }
