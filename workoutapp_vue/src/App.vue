@@ -1,7 +1,7 @@
 <template>
   <div id="nav">
       <router-link to="/">Home</router-link> |
-    <template v-if="$store.state.isAuthenticated">
+      <template v-if="$store.state.isAuthenticated">
       <router-link to="/create-workout">Create Workout</router-link> |
       <router-link to="/my-routines">My Routines</router-link> |
       <button @click="logout">Logout</button>
@@ -11,6 +11,9 @@
       <router-link to="/login">Login</router-link>
     </template>
   </div>
+  <!-- LOADING ICON --> 
+  <div v-if="isLoading" class="spinner-border" role="status"></div>
+  <!-- END LOADING ICON -->
   <router-view/>
 </template>
 
@@ -21,6 +24,7 @@ import jwt_decode from "jwt-decode";
 export default {
   data () {
     return {
+      isLoading: false,
       showMobileMenu: false,
     }
   },
@@ -42,6 +46,10 @@ export default {
       }
   },
   methods: {
+    toggleIsLoading(bool) {
+      console.log()
+      this.isLoading = bool
+    },
     logout() {
         axios.defaults.headers.common["Authorization"] = ""
 

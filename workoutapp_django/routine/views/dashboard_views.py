@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import RoutineCategory, UserRoutine, WorkoutCategory, UserWorkout, Exercise, UserExercise
-from .serializers import RoutineCategorySerializer, UserRoutineSerializer
+from ..models import RoutineCategory, UserRoutine, WorkoutCategory, UserWorkout, Exercise, UserExercise
+from ..serializers import RoutineCategorySerializer, UserRoutineSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
@@ -28,13 +28,16 @@ class GetAllUserRoutines(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        user_routines = UserRoutine.objects.filter(user_id=request.user.id, private=False) # do NOT send private routines
-
         user_routines = UserRoutine.objects.filter(user_id=request.user.id)
-        
         user_routines_serialized = UserRoutineSerializer(user_routines, many=True)
-        
         return Response(user_routines_serialized.data)
+
+class CreateUserRoutine(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        return Response("")
 
 # class GetAllCategories(APIView):
 #     def get(self, request):
