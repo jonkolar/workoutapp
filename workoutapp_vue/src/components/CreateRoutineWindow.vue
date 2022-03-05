@@ -12,6 +12,16 @@
       <div class="modal-body">
 
         <form>
+            <label for="routine-category-select">Category Options:</label>
+            <select class="form-select" id="routine-category-select" required @change="addSelectedCategory($event)">
+                <option value="default" selected hidden>select a category to add...</option>
+                <option v-for="category in routineCategoryOptions" :value="category.name">
+                    {{ category.name }}
+                </option>
+            </select>
+            <div id="selected-categories" class="mt-2">
+                <span class="badge bg-dark ms-1" v-for="category in selectedRoutineCategories">{{ category }}</span>
+            </div>
         </form>
 
       </div>
@@ -35,9 +45,29 @@ export default {
     emits: ['toggleWindow'],
     data() {
       return {
-          
+          routineCategoryOptions: [],
+          selectedRoutineCategories: []
       }
     },
+    mounted() {
+        this.getAllCategoryOptions()
+    },
+    methods: {
+        getAllCategoryOptions() {
+            axios.get('/api/public/routines/categories/all')
+                .then((response) => {
+                    for(let i = 0; i < response.data.length; i++){
+                        this.routineCategoryOptions.push(response.data[i])
+                    }
+                })
+        },
+        addSelectedCategory(event) {
+            if (!this.selectedRoutineCategories.includes(event.target.value)) {
+                this.selectedRoutineCategories.push(event.target.value)
+            }
+            $("#routine-category-select").val("default")
+        }
+    }
 }
 </script>
 

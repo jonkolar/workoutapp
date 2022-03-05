@@ -2,7 +2,7 @@
 
   <div class="card m-2 h-auto" style="width: 18rem;">
     <div class="card-header table-responsive">
-    <h4>{{routine.name}}</h4>
+    <h4 class="m-1">{{routine.name}}</h4>
     <span class="badge bg-dark ms-1" v-for="category in routine.categories">{{category.name}}</span>
     </div>
     <ul class="list-group list-group-flush">
