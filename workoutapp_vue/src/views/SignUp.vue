@@ -62,8 +62,6 @@ export default {
             email: this.email
           })
           .then((response) => {
-            console.log(response)
-
             $('#register-success-alert').show()
             this.username = ""
             this.password1 = ""

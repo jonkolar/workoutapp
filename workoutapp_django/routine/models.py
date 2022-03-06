@@ -16,7 +16,7 @@ class UserRoutine(models.Model):
     name = models.CharField(max_length=150)
     categories = models.ManyToManyField(RoutineCategory, related_name="categories")
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1, related_name="user")
-    private = models.BooleanField(null=False, default=False)
+    is_private = models.BooleanField(null=False, default=False)
 
     def __str__(self):
         return self.name

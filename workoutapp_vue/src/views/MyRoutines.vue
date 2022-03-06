@@ -11,7 +11,8 @@
   </div>
 
   <CreateRoutineWindow v-if="showCreateRoutineWindow"
-    @toggleWindow="toggleCreateRoutineWindow" />
+    @toggleWindow="toggleCreateRoutineWindow" 
+    @fetchUserRoutines="fetchUserRoutines" />
 
 
 </template>
@@ -33,20 +34,26 @@ export default {
         showCreateRoutineWindow: false,
       }
   },
-  methods: {
-      toggleCreateRoutineWindow(bool) {
-        this.showCreateRoutineWindow = bool
-      }
+  mounted() {
+    this.fetchUserRoutines()
   },
-  async mounted() {
-    this.$root.toggleIsLoading(true)
-    await axios.get(`/api/dashboard/routines/all`)
-      .then((response) => {
-        for(let i = 0; i < response.data.length; i++){
-          this.userRoutines.push(response.data[i])
-        }
-      })
-    this.$root.toggleIsLoading(false)
+  methods: {
+    async fetchUserRoutines() {
+        this.$root.toggleIsLoading(true)
+        this.userRoutines = []
+
+          await axios.get(`/api/dashboard/routines/all`)
+          .then((response) => {
+            for(let i = 0; i < response.data.length; i++){
+              this.userRoutines.push(response.data[i])
+            }
+          })
+
+        this.$root.toggleIsLoading(false)
+    },
+    toggleCreateRoutineWindow(bool) {
+        this.showCreateRoutineWindow = bool
+    }
   }
 }
 </script>

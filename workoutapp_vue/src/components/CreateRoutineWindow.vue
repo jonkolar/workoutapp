@@ -12,23 +12,33 @@
       <div class="modal-body">
 
         <form>
-            <label for="routine-category-select">Category Options:</label>
-            <select class="form-select" id="routine-category-select" required @change="addSelectedCategory($event)">
-                <option value="default" selected hidden>select a category to add...</option>
-                <option v-for="category in routineCategoryOptions" :value="category.name">
-                    {{ category.name }}
-                </option>
-            </select>
-            <div id="selected-categories" class="mt-2">
-                <span class="badge bg-dark ms-1" v-for="category in selectedRoutineCategories">{{ category }}</span>
+            <div class="m-3">
+                <label for="routine-name" class="form-label" placeholder="Enter your routine name...">Name:</label>
+                <input type="text" v-model="routineName" class="form-control" id="routine-name" required>
+            </div>
+            <div class="m-3">
+                <label for="routine-category-select">Category Options:</label>
+                <select class="form-select" id="routine-category-select" required @change="addSelectedCategory($event)">
+                    <option value="default" selected hidden>select a category to add...</option>
+                    <option v-for="category in routineCategoryOptions" :value="category.name">
+                        {{ category.name }}
+                    </option>
+                </select>
+                <div id="selected-categories" class="mt-2">
+                    <span class="badge bg-dark ms-1" v-for="category in selectedRoutineCategories">{{ category }}</span>
+                </div>
             </div>
         </form>
 
+        <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors"> {{error}} </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="createRoutine">Create Routine</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="$emit('toggleWindow', false)">Close</button>
+        </div>
+
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" @click="submitExercise">Save changes</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="$emit('toggleWindow', false)">Close</button>
-      </div>
+
     </div>
   </div>
   <br>
@@ -42,11 +52,14 @@ import axios from 'axios'
 
 export default {
     name: 'CreateRoutineWindow',
-    emits: ['toggleWindow'],
+    emits: ['toggleWindow', 'fetchUserRoutines'],
     data() {
       return {
+          routineName: "",
           routineCategoryOptions: [],
-          selectedRoutineCategories: []
+          selectedRoutineCategories: [],
+          errors: []
+          
       }
     },
     mounted() {
@@ -66,6 +79,23 @@ export default {
                 this.selectedRoutineCategories.push(event.target.value)
             }
             $("#routine-category-select").val("default")
+        },
+        createRoutine() {
+            this.errors = []
+
+            if (this.routineName == "") { this.errors.push("Routine must have a name" ) }
+            if (this.selectedRoutineCategories.length <= 0) { this.errors.push("Routine must have at least 1 category" ) }
+
+            if (this.errors.length <= 0) { // No Errors
+                axios.post('/api/dashboard/routines/create', {
+                    routineName: this.routineName,
+                    routineCategories: this.selectedRoutineCategories
+                })
+                .then((response) => {
+                    this.$emit('fetchUserRoutines')
+                    this.$emit('toggleWindow', false)
+                })
+            }
         }
     }
 }

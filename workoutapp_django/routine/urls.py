@@ -3,6 +3,7 @@ from routine.views import dashboard_views, public_views
 
 urlpatterns = [
     path('dashboard/routines/all', dashboard_views.GetAllUserRoutines.as_view()),
+    path('dashboard/routines/create', dashboard_views.CreateUserRoutine.as_view()),
     
     path('public/routines/categories/all', public_views.GetAllCategories.as_view())
     # path('workouts/user/all', views.GetAllUserWorkouts.as_view()),

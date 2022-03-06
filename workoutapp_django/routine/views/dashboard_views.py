@@ -37,7 +37,19 @@ class CreateUserRoutine(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        return Response("")
+
+        new_routine_name = request.data["routineName"]
+        new_routine_categories = request.data["routineCategories"]
+        new_routine_isPrivate = False
+
+        new_routine = UserRoutine.objects.create(user=request.user, name=new_routine_name, is_private=new_routine_isPrivate)
+        new_routine.save()
+        
+        for category in new_routine_categories:
+            category = RoutineCategory.objects.filter(name=category)
+            new_routine.categories.add(category[0])
+
+        return Response("Routine successfuly created")
 
 # class GetAllCategories(APIView):
 #     def get(self, request):

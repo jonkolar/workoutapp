@@ -14,12 +14,16 @@ class RoutineCategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class UserRoutineSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
     categories = RoutineCategorySerializer(many=True)
     user_workouts = UserWorkoutSerializer(many=True)
 
+    def get_user(self, obj):
+        return {'username': obj.user.username, 'user_id': obj.user.id}
+
     class Meta:
         model = UserRoutine
-        fields = ("name", "user", "private", "categories", "user_workouts")
+        fields = ("name", "user", "is_private", "categories", "user_workouts")
 
 # class SetSerializer(serializers.ModelSerializer):
 #     class Meta:
