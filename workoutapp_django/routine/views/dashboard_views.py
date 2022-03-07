@@ -40,7 +40,7 @@ class CreateUserRoutine(APIView):
 
         new_routine_name = request.data["routineName"]
         new_routine_categories = request.data["routineCategories"]
-        new_routine_isPrivate = False
+        new_routine_isPrivate = request.data["isPrivate"]
 
         new_routine = UserRoutine.objects.create(user=request.user, name=new_routine_name, is_private=new_routine_isPrivate)
         new_routine.save()

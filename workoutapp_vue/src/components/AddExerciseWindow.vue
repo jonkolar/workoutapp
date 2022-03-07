@@ -77,6 +77,7 @@ export default {
         exerciseOptions: [],
         selectedCategory: "",
         selectedExercise: "",
+        isPrivate: false,
         order: 1,
         sets: []
       }
