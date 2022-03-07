@@ -30,6 +30,11 @@
             </div>
         </form>
 
+        <div class="form-check form-switch m-3 d-flex">
+            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" v-model="isPrivate">
+            <label class="form-check-label checkbox-inline ms-2" for="flexSwitchCheckDefault">Private</label>
+        </div>
+
         <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors"> {{error}} </div>
 
         <div class="modal-footer">
@@ -56,10 +61,10 @@ export default {
     data() {
       return {
           routineName: "",
+          isPrivate: false,
           routineCategoryOptions: [],
           selectedRoutineCategories: [],
           errors: []
-          
       }
     },
     mounted() {
@@ -89,6 +94,7 @@ export default {
             if (this.errors.length <= 0) { // No Errors
                 axios.post('/api/dashboard/routines/create', {
                     routineName: this.routineName,
+                    isPrivate: this.isPrivate,
                     routineCategories: this.selectedRoutineCategories
                 })
                 .then((response) => {
@@ -103,7 +109,7 @@ export default {
 
 <style>
     .modal {
-        display: block;
+        display: flex;
         background-color: rgb(0, 0, 0, 0.5)
     }
 
