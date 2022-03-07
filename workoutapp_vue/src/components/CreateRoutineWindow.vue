@@ -20,12 +20,12 @@
                 <label for="routine-category-select">Category Options:</label>
                 <select class="form-select" id="routine-category-select" required @change="addSelectedCategory($event)">
                     <option value="default" selected hidden>select a category to add...</option>
-                    <option v-for="category in routineCategoryOptions" :value="category.name">
+                    <option v-for="category in routineCategoryOptions" :key="category.id" :value="category.name">
                         {{ category.name }}
                     </option>
                 </select>
                 <div id="selected-categories" class="mt-2">
-                    <span class="badge bg-dark ms-1" v-for="category in selectedRoutineCategories">{{ category }}</span>
+                    <span class="badge bg-dark ms-1" v-for="category in selectedRoutineCategories" :key="category.id">{{ category }}</span>
                 </div>
             </div>
         </form>
@@ -33,9 +33,16 @@
         <div class="form-check form-switch m-3 d-flex">
             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" v-model="isPrivate">
             <label class="form-check-label checkbox-inline ms-2" for="flexSwitchCheckDefault">Private</label>
+
+            <i  class="bi bi-info-circle-fill ms-1"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+                title="Private routines will only be viewable by you"
+                v-tooltip>
+            </i>           
         </div>
 
-        <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors"> {{error}} </div>
+        <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
 
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="createRoutine">Create Routine</button>
@@ -53,6 +60,7 @@
 </template>
 
 <script>
+import { Tooltip } from "bootstrap"
 import axios from 'axios'
 
 export default {
@@ -69,6 +77,13 @@ export default {
     },
     mounted() {
         this.getAllCategoryOptions()
+    },
+    directives: {
+        tooltip: {
+            mounted(el, binding) {
+                new Tooltip(el)
+            }
+        }
     },
     methods: {
         getAllCategoryOptions() {

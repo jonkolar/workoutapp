@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid d-flex justify-content-center">
+  <div class="container-fluid d-flex justify-content-center flex-wrap">
     <RoutineCard 
       v-for="routine in userRoutines"
       v-bind:key="routine.id"
@@ -9,7 +9,7 @@
   <div>
     <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleCreateRoutineWindow(true)"></i>
   </div>
-
+  
   <CreateRoutineWindow v-if="showCreateRoutineWindow"
     @toggleWindow="toggleCreateRoutineWindow" 
     @fetchUserRoutines="fetchUserRoutines" />
