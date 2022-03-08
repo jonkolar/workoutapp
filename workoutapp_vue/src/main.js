@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import jwt_decode from "jwt-decode"
+import { Tooltip } from "bootstrap"
 
 axios.defaults.baseURL = 'http://localhost:8000';
 
@@ -45,4 +46,12 @@ async function retrieveNewAccessToken(refreshToken) {
     return response.data['access']
 }
 
-createApp(App).use(store).use(router).mount('#app')
+const app = createApp(App)
+
+app.directive("tooltip", {
+    mounted(el, binding) {
+        new Tooltip(el)
+    }
+})
+
+app.use(store).use(router).mount('#app')

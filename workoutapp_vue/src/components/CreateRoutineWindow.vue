@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import { Tooltip } from "bootstrap"
 import axios from 'axios'
 
 export default {
@@ -77,13 +76,6 @@ export default {
     },
     mounted() {
         this.getAllCategoryOptions()
-    },
-    directives: {
-        tooltip: {
-            mounted(el, binding) {
-                new Tooltip(el)
-            }
-        }
     },
     methods: {
         getAllCategoryOptions() {

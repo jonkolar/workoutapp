@@ -30,6 +30,7 @@ export default {
       showMobileMenu: false,
     }
   },
+  mixins: [],
   created(){
       this.$store.commit('initializeStore')
 
