@@ -1,12 +1,15 @@
 <template>
+<div>
+    <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleShowWindow"></i>
+</div>
 
-<div class="modal" tabindex="1" role="dialog">
+<div v-if="showWindow" class="modal" tabindex="1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">New Routine</h5>
           <span>
-            <i class="bi bi-x-square" @click="$emit('toggleWindow', false)"></i>
+            <i class="bi bi-x-square" @click="toggleShowWindow"></i>
           </span>
       </div>
       <div class="modal-body">
@@ -46,7 +49,7 @@
 
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="createRoutine">Create Routine</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="$emit('toggleWindow', false)">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="toggleShowWindow">Close</button>
         </div>
 
       </div>
@@ -64,20 +67,24 @@ import axios from 'axios'
 
 export default {
     name: 'CreateRoutineWindow',
-    emits: ['toggleWindow', 'fetchUserRoutines'],
+    emits: ['createRoutineEmit'],
     data() {
       return {
           routineName: "",
           isPrivate: false,
           routineCategoryOptions: [],
           selectedRoutineCategories: [],
-          errors: []
+          errors: [],
+          showWindow: false
       }
     },
     mounted() {
         this.getAllCategoryOptions()
     },
     methods: {
+        toggleShowWindow() {
+            this.showWindow = !this.showWindow
+        },
         getAllCategoryOptions() {
             axios.get('/api/public/routines/categories/all')
                 .then((response) => {
@@ -105,8 +112,8 @@ export default {
                     routineCategories: this.selectedRoutineCategories
                 })
                 .then((response) => {
-                    this.$emit('fetchUserRoutines')
-                    this.$emit('toggleWindow', false)
+                    this.$emit('createRoutineEmit')
+                    this.toggleShowWindow()
                 })
             }
         }

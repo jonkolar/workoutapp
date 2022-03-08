@@ -6,13 +6,8 @@
       v-bind:routine="routine" />
   </div>
 
-  <div>
-    <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleCreateRoutineWindow(true)"></i>
-  </div>
-  
-  <CreateRoutineWindow v-if="showCreateRoutineWindow"
-    @toggleWindow="toggleCreateRoutineWindow" 
-    @fetchUserRoutines="fetchUserRoutines" />
+  <CreateRoutineWindow
+    @createRoutineEmit="fetchUserRoutines" />
 
 
 </template>
@@ -31,7 +26,6 @@ export default {
   data () {
       return {
         userRoutines: [],
-        showCreateRoutineWindow: false,
       }
   },
   mounted() {
@@ -51,9 +45,6 @@ export default {
 
         this.$root.toggleIsLoading(false)
     },
-    toggleCreateRoutineWindow(bool) {
-        this.showCreateRoutineWindow = bool
-    }
   }
 }
 </script>
