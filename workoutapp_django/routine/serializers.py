@@ -23,7 +23,7 @@ class UserRoutineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserRoutine
-        fields = ("name", "user", "is_private", "categories", "user_workouts")
+        fields = ("id", "name", "user", "is_private", "categories", "user_workouts")
 
 # class SetSerializer(serializers.ModelSerializer):
 #     class Meta:

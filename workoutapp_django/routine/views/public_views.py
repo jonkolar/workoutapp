@@ -1,3 +1,4 @@
+from msilib.schema import Error
 from users.models import CustomUser
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -15,3 +16,15 @@ class GetAllCategories(APIView):
         all_categories = RoutineCategory.objects.all()
         all_categories_serialized = RoutineCategorySerializer(all_categories, many=True)
         return Response(all_categories_serialized.data)
+
+class GetUserRoutine(APIView):
+    def get(self, request, id):
+        routine = UserRoutine.objects.get(pk=id)
+        print(request.user.id)
+        print(id)
+        if routine.is_private and not request.user.id == routine.user.id:
+            return Response("Private Routine")
+
+        routine_serialized = UserRoutineSerializer(routine)
+        
+        return Response(routine_serialized.data)

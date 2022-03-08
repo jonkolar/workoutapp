@@ -3,7 +3,7 @@
   <div class="card m-2 h-auto align-self-start" style="width: 18rem;">
     <div class="card-header table-responsive">
       <h4 class="m-1">
-        {{routine.name}}
+        <router-link class="text-decoration-none text-dark" :to="{ path: `/routine/${routine.id}` }">{{routine.name}}</router-link>
 
         <i v-if="!routine.is_private"
            class="bi bi-eye-fill ms-1"

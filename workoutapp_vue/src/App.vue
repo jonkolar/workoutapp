@@ -2,8 +2,7 @@
   <div id="nav">
       <router-link to="/">Home</router-link> |
       <template v-if="$store.state.isAuthenticated">
-      <router-link to="/create-workout">Create Workout</router-link> |
-      <router-link to="/my-routines">My Routines</router-link> |
+      <router-link to="/dashboard/routines">Routines</router-link> |
       <button @click="logout">Logout</button>
     </template>
     <template v-else>

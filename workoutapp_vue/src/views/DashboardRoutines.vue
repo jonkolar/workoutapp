@@ -18,7 +18,7 @@ import RoutineCard from '@/components/RoutineCard'
 import CreateRoutineWindow from '@/components/CreateRoutineWindow'
 
 export default {
-  name: 'MyRoutines',
+  name: 'DashboardRoutines',
   components: {
     RoutineCard,
     CreateRoutineWindow
