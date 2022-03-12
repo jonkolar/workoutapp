@@ -1,12 +1,33 @@
 from rest_framework import serializers
 from .models import RoutineCategory, UserRoutine, WorkoutCategory, UserWorkout, Exercise, UserExercise
 
+# ADD WORKOUT CATEGORY
 
-class UserWorkoutSerializer(serializers.ModelSerializer):
+class WorkoutCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserWorkout
+        model = WorkoutCategory
         fields = "__all__"
 
+class ExerciseSerializer(serializers.ModelSerializer):
+    categories = WorkoutCategorySerializer(many=True)
+
+    class Meta:
+        model = Exercise
+        fields = "__all__"
+
+class UserExerciseSerializer(serializers.ModelSerializer):
+    exercise = ExerciseSerializer()
+
+    class Meta: 
+        model = UserExercise
+        fields = "__all__"
+
+class UserWorkoutSerializer(serializers.ModelSerializer):
+    user_exercises = UserExerciseSerializer(many=True)
+
+    class Meta:
+        model = UserWorkout
+        fields = ("id", "name", "categories", "date_added", "user_exercises")
 
 class RoutineCategorySerializer(serializers.ModelSerializer):
     class Meta:

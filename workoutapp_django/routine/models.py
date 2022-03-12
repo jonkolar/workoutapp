@@ -40,14 +40,14 @@ class UserWorkout(models.Model):
 
 class Exercise(models.Model):
     name = models.CharField(max_length=150, unique=True)
-    categories = models.ManyToManyField(WorkoutCategory, related_name="routines")
+    categories = models.ManyToManyField(WorkoutCategory, related_name="exercises")
 
     def __str__(self):
         return self.name
 
 class UserExercise(models.Model):
-    workout = models.ForeignKey(UserWorkout, on_delete=models.CASCADE, default=1, related_name="workout")
-    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, default=1, related_name="user_exercises")
+    workout = models.ForeignKey(UserWorkout, on_delete=models.CASCADE, default=1, related_name="user_exercises")
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, default=1, related_name="exercise")
     date_added = models.DateTimeField(auto_now_add=True)
     order = models.IntegerField(default=1)
     description = models.CharField(max_length=250)

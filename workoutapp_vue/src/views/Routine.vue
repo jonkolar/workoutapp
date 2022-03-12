@@ -1,26 +1,37 @@
 <template>
   <div>
     <h1>{{routine.name}}</h1>
+    <p>By: {{routine.user.username}}</p>
   </div>
+
+  <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
+               :workout="userWorkout" />
+
+
 </template>
 
 <script>
 import axios from 'axios'
+import WorkoutCard from '@/components/WorkoutCard'
 
 export default {
   name: 'Routine',
   components: {
-    
+    WorkoutCard
   },
   data () {
       return {
-        routine: {},
-        userRoutineWorkouts: []
+        routine: {
+          user: {
+            username: ""
+          },
+          user_workouts: []
+        },
+  
       }
   },
   mounted() {
-
-    this.fetchRoutineData()
+      this.fetchRoutineData()
   },
   methods: {
     async fetchRoutineData() {
@@ -30,8 +41,6 @@ export default {
           .then((response) => {
             this.routine = response.data
           })
-          console.log(this.routine)
-
       this.$root.toggleIsLoading(false)
     }
   },
