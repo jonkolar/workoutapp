@@ -7,12 +7,17 @@
   <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
                :workout="userWorkout" />
 
+  <div v-if="$store.state.isAuthenticated && isRoutineOwner($store.state.accessToken)" class="mt-4">
+    <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click=""></i>
+  </div>
+
 
 </template>
 
 <script>
 import axios from 'axios'
 import WorkoutCard from '@/components/WorkoutCard'
+import jwt_decode from "jwt-decode";
 
 export default {
   name: 'Routine',
@@ -23,7 +28,8 @@ export default {
       return {
         routine: {
           user: {
-            username: ""
+            username: "",
+            id: 1
           },
           user_workouts: []
         },
@@ -42,7 +48,11 @@ export default {
             this.routine = response.data
           })
       this.$root.toggleIsLoading(false)
+    },
+    isRoutineOwner(accessToken) {
+      let authenticatedUser = jwt_decode(accessToken)
+      return authenticatedUser.user_id === this.routine.id
     }
-  },
+  }
 }
 </script>
