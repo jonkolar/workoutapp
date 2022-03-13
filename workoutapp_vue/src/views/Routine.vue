@@ -2,14 +2,17 @@
   <div>
     <h1>{{routine.name}}</h1>
     <p>By: {{routine.user.username}}</p>
+    <div class="bg-light d-inline-block p-2">
+      <span class="badge bg-dark ms-1" v-for="category in routine.categories" :key="category.id">{{category.name}}</span>
+    </div>
   </div>
 
   <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
                :workout="userWorkout" />
 
-  <CreateWorkoutWindow
-    v-if="$store.state.isAuthenticated && isRoutineOwner($store.state.accessToken)" />
-
+  <CreateWorkoutWindow v-if="$store.state.isAuthenticated && isRoutineOwner($store.state.accessToken)" 
+                        :routineId="routine.id"
+                        @createWorkoutEmit="fetchRoutineData" />
 
 </template>
 
@@ -27,6 +30,7 @@ export default {
   data () {
       return {
         routine: {
+          id: 0,
           user: {
             username: "",
             id: 1

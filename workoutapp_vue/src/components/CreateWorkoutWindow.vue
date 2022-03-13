@@ -56,6 +56,7 @@ import axios from 'axios'
 
 export default {
     name: 'CreateWorkouteWindow',
+    props: ['routineId'],
     emits: ['createWorkoutEmit'],
     data() {
       return {
@@ -86,6 +87,17 @@ export default {
                 this.selectedWorkoutCategories.push(event.target.value)
             }
             $("#workout-category-select").val("default")
+        },
+        createWorkout() {
+            axios.post('/api/dashboard/workouts/create', {
+                    routineId: this.routineId,
+                    workoutName: this.workoutName,
+                    workoutCategories: this.selectedWorkoutCategories
+                })
+                .then((response) => {
+                    this.$emit('createWorkoutEmit')
+                    this.toggleShowWindow()
+                })
         }
     }
 }

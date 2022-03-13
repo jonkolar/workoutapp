@@ -49,7 +49,26 @@ class CreateUserRoutine(APIView):
             category = RoutineCategory.objects.filter(name=category)
             new_routine.categories.add(category[0])
 
-        return Response("Routine successfuly created")
+        return Response("Routine successfully created")
+
+class CreateUserWorkout(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request):
+        user_routine_id = request.data["routineId"]
+        user_workout_name = request.data["workoutName"]
+        user_workout_categories = request.data["workoutCategories"]
+
+        user_routine = UserRoutine.objects.filter(id=user_routine_id)
+        new_workout = UserWorkout.objects.create(routine=user_routine[0], name=user_workout_name)
+        new_workout.save()
+
+        for category in user_workout_categories:
+            category = WorkoutCategory.objects.filter(name=category)
+            new_workout.categories.add(category[0])
+
+        return Response("Workout successfully created")
 
 # class GetAllCategories(APIView):
 #     def get(self, request):

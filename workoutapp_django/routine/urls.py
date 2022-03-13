@@ -4,6 +4,7 @@ from routine.views import dashboard_views, public_views
 urlpatterns = [
     path('dashboard/routines/all', dashboard_views.GetAllUserRoutines.as_view()),
     path('dashboard/routines/create', dashboard_views.CreateUserRoutine.as_view()),
+    path('dashboard/workouts/create', dashboard_views.CreateUserWorkout.as_view()),
     
     path('public/routines/categories/all', public_views.GetAllRoutineCategories.as_view()),
     path('public/routines/<int:id>', public_views.GetUserRoutine.as_view()),
