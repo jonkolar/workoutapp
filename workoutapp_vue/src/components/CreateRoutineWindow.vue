@@ -19,6 +19,7 @@
                 <label for="routine-name" class="form-label" placeholder="Enter your routine name...">Name:</label>
                 <input type="text" v-model="routineName" class="form-control" id="routine-name" required>
             </div>
+            
             <div class="m-3">
                 <label for="routine-category-select">Category Options:</label>
                 <select class="form-select" id="routine-category-select" required @change="addSelectedCategory($event)">
@@ -129,5 +130,10 @@ export default {
 
     .modal-backdrop {
         background-color: red;
+    }
+
+    .modal-dialog {
+        width: 90%;
+        max-width: 500px;
     }
 </style>
