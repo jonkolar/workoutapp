@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from ..models import RoutineCategory, UserRoutine, WorkoutCategory, UserWorkout, Exercise, UserExercise
+from ..models import RoutineCategory, UserRoutine, ExerciseCategory, UserWorkout, Exercise, UserExercise
 from ..serializers import RoutineCategorySerializer, UserRoutineSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
@@ -58,15 +58,10 @@ class CreateUserWorkout(APIView):
     def post(self, request):
         user_routine_id = request.data["routineId"]
         user_workout_name = request.data["workoutName"]
-        user_workout_categories = request.data["workoutCategories"]
 
         user_routine = UserRoutine.objects.filter(id=user_routine_id)
         new_workout = UserWorkout.objects.create(routine=user_routine[0], name=user_workout_name)
         new_workout.save()
-
-        for category in user_workout_categories:
-            category = WorkoutCategory.objects.filter(name=category)
-            new_workout.categories.add(category[0])
 
         return Response("Workout successfully created")
 

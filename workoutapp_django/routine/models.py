@@ -21,7 +21,7 @@ class UserRoutine(models.Model):
     def __str__(self):
         return self.name
 
-class WorkoutCategory(models.Model):
+class ExerciseCategory(models.Model):
     name = models.CharField(max_length=150, unique=True)
     slug = models.SlugField(unique=True)
 
@@ -30,7 +30,6 @@ class WorkoutCategory(models.Model):
 
 class UserWorkout(models.Model):
     routine = models.ForeignKey(UserRoutine, on_delete=models.CASCADE, default=1, related_name="user_workouts")
-    categories = models.ManyToManyField(WorkoutCategory)
     name = models.CharField(max_length=150)
     date_added = models.DateTimeField(auto_now_add=True)
 
@@ -40,7 +39,7 @@ class UserWorkout(models.Model):
 
 class Exercise(models.Model):
     name = models.CharField(max_length=150, unique=True)
-    categories = models.ManyToManyField(WorkoutCategory, related_name="exercises")
+    categories = models.ManyToManyField(ExerciseCategory, related_name="exercises")
 
     def __str__(self):
         return self.name

@@ -11,7 +11,11 @@
         </div>
         <span class="badge bg-dark ms-1" v-for="category in userExercise.exercise.categories" :key="category.id">{{category.name}}</span>
       </li>
-    </ol> 
+    </ol>
+    <div v-if="isOwner" id="workout-edit-options" class="mt-3">
+      <i class="bi bi-gear-fill ms-2" style="font-size: 20px"></i>
+      <i class="bi bi-trash-fill ms-2" style="font-size: 20px; color: red;"></i>
+    </div>
   </div>
 </div>
 </template>
@@ -19,9 +23,7 @@
 
 export default {
     name: 'WorkoutCard',
-    props: {
-        workout: Object
-    },
+    props: ['workout', 'isOwner']
 }
 </script>
 

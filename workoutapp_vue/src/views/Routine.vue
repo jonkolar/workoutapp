@@ -8,9 +8,10 @@
   </div>
 
   <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
-               :workout="userWorkout" />
+               :workout="userWorkout" 
+               :isOwner="isOwner" />
 
-  <CreateWorkoutWindow v-if="$store.state.isAuthenticated && isRoutineOwner($store.state.accessToken)" 
+  <CreateWorkoutWindow v-if="isOwner" 
                         :routineId="routine.id"
                         @createWorkoutEmit="fetchRoutineData" />
 
@@ -37,11 +38,12 @@ export default {
           },
           user_workouts: []
         },
-  
+        isOwner: false
       }
   },
   mounted() {
       this.fetchRoutineData()
+      this.isRoutineOwner()
   },
   methods: {
     async fetchRoutineData() {
@@ -53,9 +55,11 @@ export default {
           })
       this.$root.toggleIsLoading(false)
     },
-    isRoutineOwner(accessToken) {
-      let authenticatedUser = jwt_decode(accessToken)
-      return authenticatedUser.user_id === this.routine.user.user_id
+    isRoutineOwner() {
+      if (this.$store.state.isAuthenticated) {
+        let authenticatedUser = jwt_decode(this.$store.state.accessToken)
+        this.isOwner = authenticatedUser.user_id === this.routine.user.id
+      }
     }
   }
 }

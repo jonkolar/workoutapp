@@ -19,19 +19,6 @@
                 <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Name:</label>
                 <input type="text" v-model="workoutName" class="form-control" id="workout-name" required>
             </div>
-
-            <div class="m-3">
-                <label for="workout-category-select">Category Options:</label>
-                <select class="form-select" id="workout-category-select" required @change="addSelectedCategory($event)">
-                    <option value="default" selected hidden>select a category to add...</option>
-                    <option v-for="category in workoutCategoryOptions" :key="category.id" :value="category.name">
-                        {{ category.name }}
-                    </option>
-                </select>
-                <div id="selected-categories" class="mt-2">
-                    <span class="badge bg-dark ms-1" v-for="category in selectedWorkoutCategories" :key="category.id">{{ category }}</span>
-                </div>
-            </div>
         </form>
 
         <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
@@ -61,32 +48,16 @@ export default {
     data() {
       return {
           workoutName: "",
-          workoutCategoryOptions: [],
-          selectedWorkoutCategories: [],
           errors: [],
           showWindow: false
       }
     },
     mounted() {
-        this.getAllCategoryOptions()
+        
     },
     methods: {
         toggleShowWindow() {
             this.showWindow = !this.showWindow
-        },
-        getAllCategoryOptions() {
-            axios.get('/api/public/workouts/categories/all')
-                .then((response) => {
-                    for(let i = 0; i < response.data.length; i++){
-                        this.workoutCategoryOptions.push(response.data[i])
-                    }
-                })
-        },
-        addSelectedCategory(event) {
-            if (!this.selectedWorkoutCategories.includes(event.target.value)) {
-                this.selectedWorkoutCategories.push(event.target.value)
-            }
-            $("#workout-category-select").val("default")
         },
         createWorkout() {
             axios.post('/api/dashboard/workouts/create', {
