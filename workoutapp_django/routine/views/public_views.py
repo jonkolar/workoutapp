@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from ..models import RoutineCategory, UserRoutine, ExerciseCategory, UserWorkout, Exercise, UserExercise
-from ..serializers import RoutineCategorySerializer, UserRoutineSerializer, ExerciseCategorySerializer
+from ..serializers import ExerciseSerializer, RoutineCategorySerializer, UserRoutineSerializer, ExerciseCategorySerializer
 
 class GetAllRoutineCategories(APIView):
     def get(self, request):
@@ -34,3 +34,9 @@ class GetAllWorkoutCategories(APIView):
         all_categories = ExerciseCategory.objects.all()
         all_categories_serialized = ExerciseCategorySerializer(all_categories, many=True)
         return Response(all_categories_serialized.data)
+
+class GetAllExercises(APIView):
+    def get(self, request):
+        all_exercises = Exercise.objects.all()
+        all_exercises_serialiazed = ExerciseSerializer(all_exercises, many=True)
+        return Response(all_exercises_serialiazed.data)

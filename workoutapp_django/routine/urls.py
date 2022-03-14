@@ -9,7 +9,8 @@ urlpatterns = [
     path('public/routines/categories/all', public_views.GetAllRoutineCategories.as_view()),
     path('public/routines/<int:id>', public_views.GetUserRoutine.as_view()),
 
-    path('public/workouts/categories/all', public_views.GetAllWorkoutCategories.as_view())
+    path('public/workouts/categories/all', public_views.GetAllWorkoutCategories.as_view()),
+    path('public/workouts/exercises/all', public_views.GetAllExercises.as_view())
     # path('workouts/user/all', views.GetAllUserWorkouts.as_view()),
     # path('workouts/categorys/all', views.GetAllCategories.as_view()),
     # path('workout/exercises/<str:category>', views.GetExercises.as_view()),

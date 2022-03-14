@@ -14,12 +14,25 @@
       </div>
       <div class="modal-body">
 
+        <button @click="devShowExercises()">Dev Show Exercises</button>
+
         <form>
             <div class="m-3">
-                <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Name:</label>
+                <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Workout Name:</label>
                 <input type="text" v-model="workoutName" class="form-control" id="workout-name" required>
             </div>
+
+            <AddExerciseInputGroup v-for="userExercise in userExercises"
+                :currentExercise="userExercises.indexOf(userExercise) + 1"
+                v-model:description="userExercise.description"
+                v-model:order="userExercise.order"
+                v-model:exerciseId="userExercise.exerciseId" />
+
         </form>
+
+        <div>
+            <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="addExercise"></i>
+        </div>
 
         <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
 
@@ -40,14 +53,19 @@
 
 <script>
 import axios from 'axios'
+import AddExerciseInputGroup from '@/components/AddExerciseInputGroup'
 
 export default {
     name: 'CreateWorkouteWindow',
+    components: {
+        AddExerciseInputGroup
+    },
     props: ['routineId'],
     emits: ['createWorkoutEmit'],
     data() {
       return {
           workoutName: "",
+          userExercises: [],
           errors: [],
           showWindow: false
       }
@@ -59,16 +77,15 @@ export default {
         toggleShowWindow() {
             this.showWindow = !this.showWindow
         },
-        createWorkout() {
-            axios.post('/api/dashboard/workouts/create', {
-                    routineId: this.routineId,
-                    workoutName: this.workoutName,
-                    workoutCategories: this.selectedWorkoutCategories
-                })
-                .then((response) => {
-                    this.$emit('createWorkoutEmit')
-                    this.toggleShowWindow()
-                })
+        addExercise() {
+            this.userExercises.push({
+                exerciseId: -1,
+                order: this.userExercises.length + 1,
+                description: "",
+            })
+        },
+        devShowExercises() {
+            console.log(this.userExercises)
         }
     }
 }
