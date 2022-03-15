@@ -84,6 +84,22 @@ export default {
                 description: "",
             })
         },
+        createWorkout() {
+            this.errors = []
+
+            if (this.workoutName == "") { this.errors.push("Workout must have a name" ) }
+
+            if (this.errors.length <= 0) { // No Errors
+                axios.post('/api/dashboard/workouts/create', {
+                    routineId: this.routineId,
+                    workoutName: this.workoutName,
+                    userExercises: this.userExercises
+                })
+                .then((response) => {
+                    // do something
+                })
+            }
+        },
         devShowExercises() {
             console.log(this.userExercises)
         }

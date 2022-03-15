@@ -57,11 +57,17 @@ class CreateUserWorkout(APIView):
 
     def post(self, request):
         user_routine_id = request.data["routineId"]
-        user_workout_name = request.data["workoutName"]
+        workout_name = request.data["workoutName"]
+        user_exercises = request.data["userExercises"]
 
-        user_routine = UserRoutine.objects.filter(id=user_routine_id)
-        new_workout = UserWorkout.objects.create(routine=user_routine[0], name=user_workout_name)
+        user_routine = UserRoutine.objects.get(pk=user_routine_id)
+        new_workout = UserWorkout.objects.create(routine=user_routine, name=workout_name)
         new_workout.save()
+
+        for user_exercise in user_exercises:
+            print(user_exercise)
+            exercise = Exercise.objects.get(pk=user_exercise['exerciseId'])
+            new_workout.user_exercises.create(exercise=exercise, order=user_exercise['order'], description=user_exercise['description'])
 
         return Response("Workout successfully created")
 
