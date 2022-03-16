@@ -85,4 +85,8 @@ export default {
     }
   }
 }
+
+.pointerButton:hover {
+  cursor: pointer;
+}
 </style>

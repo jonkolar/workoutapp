@@ -3,7 +3,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">New Workout</h5>
+        <h5 class="modal-title">Edit Workout</h5>
           <span>
             <i class="bi bi-x-square" @click="closeWindow"></i>
           </span>
@@ -15,7 +15,7 @@
         <form>
             <div class="m-3">
                 <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Workout Name:</label>
-                <input type="text" v-model="workoutName" class="form-control" id="workout-name" required>
+                <input type="text" v-model="currentWorkoutName" class="form-control" id="workout-name" required>
             </div>
 
             <ExerciseInputGroup v-for="userExercise in userExercises"
@@ -33,7 +33,7 @@
         <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="createWorkout">Create Workout</button>
+            <button type="button" class="btn btn-primary" @click="editWorkout">Create Workout</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeWindow">Close</button>
         </div>
 
@@ -52,12 +52,12 @@ import axios from 'axios'
 import ExerciseInputGroup from '@/components/ExerciseInputGroup'
 
 export default {
-    name: 'CreateWorkoutWindow',
+    name: 'EditWorkoutWindow',
     components: {
         ExerciseInputGroup
     },
-    props: ['routineId'],
-    emits: ['createWorkoutEmit', 'closeWindowEmit'],
+    props: ['routineId', 'currentUserExercises', 'currentWorkoutName'],
+    emits: ['editWorkoutEmit', 'closeWindowEmit'],
     data() {
       return {
           workoutName: "",
@@ -66,11 +66,20 @@ export default {
       }
     },
     mounted() {
-        
+        this.fillCurrentWorkoutData()
     },
     methods: {
         closeWindow() {
             this.$emit('closeWindowEmit')
+        },
+        fillCurrentWorkoutData() {
+            for(let i=0; i<this.currentUserExercises.length; i++) {
+                this.userExercises.push({
+                    exerciseId: this.currentUserExercises[i].exercise.id,
+                    order: this.currentUserExercises[i].order,
+                    description: this.currentUserExercises[i].description
+                })
+            }
         },
         addExercise() {
             this.userExercises.push({
@@ -79,22 +88,8 @@ export default {
                 description: "",
             })
         },
-        createWorkout() {
-            this.errors = []
-
-            if (this.workoutName == "") { this.errors.push("Workout must have a name" ) }
-
-            if (this.errors.length <= 0) { // No Errors
-                axios.post('/api/dashboard/workouts/create', {
-                    routineId: this.routineId,
-                    workoutName: this.workoutName,
-                    userExercises: this.userExercises
-                })
-                .then((response) => {
-                    this.$emit('createWorkoutEmit')
-                    this.$emit('closeWindowEmit')
-                })
-            }
+        editWorkout() {
+            // edit the workout
         },
         devShowExercises() {
             console.log(this.userExercises)

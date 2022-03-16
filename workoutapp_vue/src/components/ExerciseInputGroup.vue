@@ -3,8 +3,8 @@
         <h5>Exercise {{currentExercise}}</h5>
         <div class="m-2">
             <label for="workout-exercise-select">Exercise:</label>
-            <select class="form-select" id="workout-exercise-select" required
-                @change="$emit('update:exerciseId', $event.target.value)">
+            <select class="form-select" :id="'workout-exercise-select' + currentExercise" required
+                :model="exerciseId" @change="$emit('update:exerciseId', $event.target.value)" :value="exerciseId">
                 <option value="-1" selected hidden>select the exercise...</option>
                 <option v-for="exercise in exerciseOptions" :key="exercise.id" :value="exercise.id">
                 {{ exercise.name }}
@@ -29,7 +29,7 @@
 import axios from 'axios'
 
 export default {
-    name: 'AddExerciseInputGroup',
+    name: 'ExerciseInputGroup',
     props: ['description', 'order', 'exerciseId', 'currentExercise'],
     emits: ['update:description', 'update:order', 'update:exerciseId'],
     data() {

@@ -11,9 +11,14 @@
                :workout="userWorkout" 
                :isOwner="isOwner" />
 
-  <CreateWorkoutWindow v-if="isOwner" 
+  <div class="mt-4" v-if="isOwner">
+    <i class="pointerButton bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleCreateWorkoutWindow"></i>
+  </div>
+
+  <CreateWorkoutWindow v-if="showCreateWorkoutWindow" 
                         :routineId="routine.id"
-                        @createWorkoutEmit="fetchRoutineData" />
+                        @createWorkoutEmit="fetchRoutineData"
+                        @closeWindowEmit="toggleCreateWorkoutWindow" />
 
 </template>
 
@@ -38,7 +43,8 @@ export default {
           },
           user_workouts: []
         },
-        isOwner: false
+        isOwner: false,
+        showCreateWorkoutWindow: false,
       }
   },
   mounted() {
@@ -60,6 +66,9 @@ export default {
         let authenticatedUser = jwt_decode(this.$store.state.accessToken)
         this.isOwner = authenticatedUser.user_id === this.routine.user.id
       }
+    },
+    toggleCreateWorkoutWindow() {
+      this.showCreateWorkoutWindow = !this.showCreateWorkoutWindow
     }
   }
 }
