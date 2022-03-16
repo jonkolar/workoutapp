@@ -71,6 +71,33 @@ class CreateUserWorkout(APIView):
 
         return Response("Workout successfully created")
 
+class UpdateUserWorkout(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    #TODO: Checks if field has been changed to reduce DB calls
+    def post(self, request):
+        id = request.data["userWorkoutId"]
+        updated_name = request.data["name"]
+        updated_user_exercises = request.data["userExercises"]
+
+        # Update User Workout Fields
+        user_workout = UserWorkout.objects.get(pk=id)
+        user_workout.name = updated_name
+        user_workout.save()
+
+        # Update User Workout Exercises
+        for updated_user_exercise in updated_user_exercises:
+            user_exercise = UserExercise.objects.get(pk=updated_user_exercise['userExerciseId'])
+
+            exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
+            user_exercise.exercise = exercise
+            user_exercise.order = updated_user_exercise['order']
+            user_exercise.description = updated_user_exercise['description']
+            user_exercise.save()
+
+        return Response("User Workout Updated")
+
 # class GetAllCategories(APIView):
 #     def get(self, request):
 #         all_categories = Category.objects.all()

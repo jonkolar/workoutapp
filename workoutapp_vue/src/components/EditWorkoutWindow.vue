@@ -33,7 +33,7 @@
         <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="editWorkout">Create Workout</button>
+            <button type="button" class="btn btn-primary" @click="editWorkout">Save Changes</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeWindow">Close</button>
         </div>
 
@@ -56,7 +56,7 @@ export default {
     components: {
         ExerciseInputGroup
     },
-    props: ['routineId', 'currentUserExercises', 'currentWorkoutName'],
+    props: ['userWorkoutId', 'currentUserExercises', 'currentWorkoutName'],
     emits: ['editWorkoutEmit', 'closeWindowEmit'],
     data() {
       return {
@@ -75,6 +75,7 @@ export default {
         fillCurrentWorkoutData() {
             for(let i=0; i<this.currentUserExercises.length; i++) {
                 this.userExercises.push({
+                    userExerciseId: this.currentUserExercises[i].id,
                     exerciseId: this.currentUserExercises[i].exercise.id,
                     order: this.currentUserExercises[i].order,
                     description: this.currentUserExercises[i].description
@@ -89,7 +90,15 @@ export default {
             })
         },
         editWorkout() {
-            // edit the workout
+            axios.post('/api/dashboard/workouts/update', {
+                userWorkoutId: this.userWorkoutId,
+                name: this.currentWorkoutName,
+                userExercises: this.userExercises
+            })
+            .then((response) => {
+                this.$emit('editWorkoutEmit')
+                this.$emit('closeWindowEmit')
+            })
         },
         devShowExercises() {
             console.log(this.userExercises)

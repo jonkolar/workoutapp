@@ -16,6 +16,8 @@
 
       <EditWorkoutWindow v-if="showEditWorkoutWindow"
         @closeWindowEmit="toggleEditWorkoutWindow"
+        @editWorkoutEmit="workoutEdited"
+        :userWorkoutId="workout.id"
         :currentWorkoutName="workout.name"
         :currentUserExercises="workout.user_exercises" />
 
@@ -33,7 +35,7 @@ export default {
     components: {
       EditWorkoutWindow
     },
-    props: ['workout', 'isOwner'],
+    props: ['workout', 'isOwner', 'workoutEdited'],
     data() {
       return {
         showEditWorkoutWindow: false
@@ -41,7 +43,6 @@ export default {
     },
     methods: {
       toggleEditWorkoutWindow() {
-        console.log("WINDOW TOGGLE")
         this.showEditWorkoutWindow = !this.showEditWorkoutWindow
       }
     }

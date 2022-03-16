@@ -8,6 +8,7 @@
   </div>
 
   <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
+               :workoutEdited="fetchRoutineData"
                :workout="userWorkout" 
                :isOwner="isOwner" />
 

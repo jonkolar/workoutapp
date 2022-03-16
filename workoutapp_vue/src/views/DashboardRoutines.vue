@@ -6,7 +6,8 @@
       v-bind:routine="routine" />
   </div>
 
-  <CreateRoutineWindow
+  <!-- CHANGE SO ROUTINE WINDOW DOES NOT INCLUDE BUTTON -->
+  <CreateRoutineWindow 
     @createRoutineEmit="fetchUserRoutines" />
 
 

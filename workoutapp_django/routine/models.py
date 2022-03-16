@@ -32,7 +32,7 @@ class UserWorkout(models.Model):
     routine = models.ForeignKey(UserRoutine, on_delete=models.CASCADE, default=1, related_name="user_workouts")
     name = models.CharField(max_length=150)
     date_added = models.DateTimeField(auto_now_add=True)
-
+    
     def __str__(self):
         return self.name
 
