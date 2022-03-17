@@ -8,7 +8,7 @@
   </div>
 
   <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
-               :workoutEdited="fetchRoutineData"
+               :setEditWorkoutWindowCurrentWorkout="setEditWorkoutWindowCurrentWorkout"
                :workout="userWorkout" 
                :isOwner="isOwner" />
 
@@ -21,18 +21,26 @@
                         @createWorkoutEmit="fetchRoutineData"
                         @closeWindowEmit="toggleCreateWorkoutWindow" />
 
+  <EditWorkoutWindow v-if="editWorkoutWindow.showWindow"
+                        @editWorkoutEmit="fetchRoutineData"
+                        @closeWindowEmit="toggleEditWorkoutWindow"
+                        :userWorkoutId="editWorkoutWindow.currentWorkout.id"
+                        :currentWorkoutName="editWorkoutWindow.currentWorkout.name"
+                        :currentUserExercises="editWorkoutWindow.currentWorkout.user_exercises" />
+
 </template>
 
 <script>
 import axios from 'axios'
 import WorkoutCard from '@/components/WorkoutCard'
 import CreateWorkoutWindow from '@/components/CreateWorkoutWindow'
+import EditWorkoutWindow from '@/components/EditWorkoutWindow'
 import jwt_decode from "jwt-decode";
 
 export default {
   name: 'Routine',
   components: {
-    WorkoutCard, CreateWorkoutWindow
+    WorkoutCard, CreateWorkoutWindow, EditWorkoutWindow
   },
   data () {
       return {
@@ -46,6 +54,10 @@ export default {
         },
         isOwner: false,
         showCreateWorkoutWindow: false,
+        editWorkoutWindow: {
+          showWindow: false,
+          currentWorkout: {}
+        }
       }
   },
   mounted() {
@@ -70,6 +82,13 @@ export default {
     },
     toggleCreateWorkoutWindow() {
       this.showCreateWorkoutWindow = !this.showCreateWorkoutWindow
+    },
+    toggleEditWorkoutWindow() {
+      this.editWorkoutWindow.showWindow = !this.editWorkoutWindow.showWindow
+    },
+    setEditWorkoutWindowCurrentWorkout(workout) {
+      this.editWorkoutWindow.currentWorkout = workout
+      this.toggleEditWorkoutWindow()
     }
   }
 }

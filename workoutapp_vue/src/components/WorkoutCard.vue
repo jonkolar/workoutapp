@@ -14,38 +14,18 @@
     </ol>
     <div v-if="isOwner" id="workout-edit-options" class="mt-3">
 
-      <EditWorkoutWindow v-if="showEditWorkoutWindow"
-        @closeWindowEmit="toggleEditWorkoutWindow"
-        @editWorkoutEmit="workoutEdited"
-        :userWorkoutId="workout.id"
-        :currentWorkoutName="workout.name"
-        :currentUserExercises="workout.user_exercises" />
-
-      <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 20px" @click="toggleEditWorkoutWindow"></i>
+      <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 20px" @click="setEditWorkoutWindowCurrentWorkout(workout)"></i>
       <i class="pointerButton bi bi-trash-fill ms-2" style="font-size: 20px; color: red;"></i>
     </div>
   </div>
 </div>
 </template>
-<script>
-import EditWorkoutWindow from '@/components/EditWorkoutWindow'
 
+
+<script>
 export default {
     name: 'WorkoutCard',
-    components: {
-      EditWorkoutWindow
-    },
-    props: ['workout', 'isOwner', 'workoutEdited'],
-    data() {
-      return {
-        showEditWorkoutWindow: false
-      }
-    },
-    methods: {
-      toggleEditWorkoutWindow() {
-        this.showEditWorkoutWindow = !this.showEditWorkoutWindow
-      }
-    }
+    props: ['workout', 'isOwner', 'setEditWorkoutWindowCurrentWorkout'],
 }
 </script>
 
