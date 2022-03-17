@@ -95,77 +95,49 @@ class UpdateUserWorkout(APIView):
             user_workout.save()
 
         #Update User Exercise Fields
-        user_exercises = UserExercise.objects.filter(workout_id=user_workout.id)
-        for user_exercise in user_exercises:
-            for updated_user_exercise in updated_user_exercises:
-                if user_exercise.id == updated_user_exercise['userExerciseId']:
-                    should_save = False
-                    if user_exercise.exercise.id != updated_user_exercise['exerciseId']:
-                        should_save = True
-                        user_exercise.exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
-                    if user_exercise.order != updated_user_exercise['order']:
-                        should_save = True
-                        user_exercise.order = updated_user_exercise['order']
-                    if user_exercise.description != updated_user_exercise['description']:
-                        should_save = True
-                        user_exercise.description = updated_user_exercise['description']
+        for updated_user_exercise in updated_user_exercises:
+            user_exercise = UserExercise.objects.get(pk=updated_user_exercise["userExerciseId"])
+            write_fields(user_exercise, 
+                description=updated_user_exercise["description"],
+                order=updated_user_exercise["order"],
+                exercise=Exercise.objects.get(pk=updated_user_exercise["exerciseId"]))
 
-                    if should_save:
-                        user_exercise.save()
-                    break
 
-        # Update User Workout Exercises
-        # for updated_user_exercise in updated_user_exercises:
-        #     user_exercise = UserExercise.objects.get(pk=updated_user_exercise['userExerciseId'])
+        # user_exercises = UserExercise.objects.filter(workout_id=user_workout.id)
+        # for user_exercise in user_exercises:
+        #     for updated_user_exercise in updated_user_exercises:
+        #         if user_exercise.id == updated_user_exercise['userExerciseId']:
+        #             should_save = False
+        #             if user_exercise.exercise.id != updated_user_exercise['exerciseId']:
+        #                 should_save = True
+        #                 user_exercise.exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
+        #             if user_exercise.order != updated_user_exercise['order']:
+        #                 should_save = True
+        #                 user_exercise.order = updated_user_exercise['order']
+        #             if user_exercise.description != updated_user_exercise['description']:
+        #                 should_save = True
+        #                 user_exercise.description = updated_user_exercise['description']
 
-        #     exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
-        #     user_exercise.exercise = exercise
-        #     user_exercise.order = updated_user_exercise['order']
-        #     user_exercise.description = updated_user_exercise['description']
-        #     user_exercise.save()
+        #             if should_save:
+        #                 user_exercise.save()
+        #             break
 
         for query in connection.queries:
             print(str(query) + "\n")
 
         return Response("User Workout Updated")
 
-# class GetAllCategories(APIView):
-#     def get(self, request):
-#         all_categories = Category.objects.all()
-#         all_categories_serialized = CategorySerializer(all_categories, many=True)
-#         return Response(all_categories_serialized.data)
+def write_fields(obj, **kwargs):
+        should_save = False
+        
+        for k, v in kwargs.items():
+            if getattr(obj, k) != v:
+                setattr(obj, k, v)
+                should_save = True
 
-# class GetExercises(APIView):
-#     def get(self, request, category):
-#         exercises = Exercise.objects.filter(category=category)
-#         exercises_serialized = ExerciseSerializer(exercises, many=True)
-#         return Response(exercises_serialized.data)
+        if should_save:
+            obj.save(update_fields=kwargs.keys())
 
-# class CreateWorkout(APIView):
-#     def post(self, request):
-#         createdWorkout = self.createWorkout(request.user, request.data['name'])
-#         self.createWorkoutExercises(createdWorkout, request.data['exercises'])
-#         return Response("created workout")
-
-#     def createWorkout(self, user, name):
-#         newWorkout = Workout(user=user, name=name)
-#         newWorkout.save()
-#         return newWorkout
-
-#     def createWorkoutExercises(self, workout, exercises):
-#         for exercise in exercises:
-#             exerciseInstance = Exercise.objects.get(id=exercise['exercise']['id'])
-
-#             workoutExerciseInstance = WorkoutExercise(workout=workout, exercise=exerciseInstance, order=exercise['order'])
-#             workoutExerciseInstance.save()
-
-#             sets = []
-#             for set in exercise['sets']:
-#                 print(set)
-#                 new_set = Set(workout_exercise=workoutExerciseInstance, description=set["description"], set_number=set["setNumber"], reps=set["reps"])
-#                 sets.append(new_set)
-
-#             Set.objects.bulk_create(sets)
 
 
            
