@@ -14,10 +14,6 @@ from ..serializers import RoutineCategorySerializer, UserRoutineSerializer
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 
-# FOR TESTING
-import time
-from django.db import connection, reset_queries
-
 # Create your views here.
 
 # @api_view(['GET'])
@@ -76,14 +72,11 @@ class CreateUserWorkout(APIView):
         return Response("Workout successfully created")
 
 #TODO: Check if a new exercise has been added
-#TODO: Checks if field has been changed to reduce DB calls
 class UpdateUserWorkout(APIView):
     authentication_Classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
     def put(self, request):
-        reset_queries()
-
         id = request.data["userWorkoutId"]
         updated_name = request.data["name"]
         updated_user_exercises = request.data["userExercises"]
@@ -94,36 +87,16 @@ class UpdateUserWorkout(APIView):
             user_workout.name = updated_name
             user_workout.save()
 
-        #Update User Exercise Fields
-        for updated_user_exercise in updated_user_exercises:
-            user_exercise = UserExercise.objects.get(pk=updated_user_exercise["userExerciseId"])
-            write_fields(user_exercise, 
-                description=updated_user_exercise["description"],
-                order=updated_user_exercise["order"],
-                exercise=Exercise.objects.get(pk=updated_user_exercise["exerciseId"]))
-
-
-        # user_exercises = UserExercise.objects.filter(workout_id=user_workout.id)
-        # for user_exercise in user_exercises:
-        #     for updated_user_exercise in updated_user_exercises:
-        #         if user_exercise.id == updated_user_exercise['userExerciseId']:
-        #             should_save = False
-        #             if user_exercise.exercise.id != updated_user_exercise['exerciseId']:
-        #                 should_save = True
-        #                 user_exercise.exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
-        #             if user_exercise.order != updated_user_exercise['order']:
-        #                 should_save = True
-        #                 user_exercise.order = updated_user_exercise['order']
-        #             if user_exercise.description != updated_user_exercise['description']:
-        #                 should_save = True
-        #                 user_exercise.description = updated_user_exercise['description']
-
-        #             if should_save:
-        #                 user_exercise.save()
-        #             break
-
-        for query in connection.queries:
-            print(str(query) + "\n")
+        # Update User Exercise Fields
+        user_exercises = UserExercise.objects.filter(workout_id=id)
+        for user_exercise in user_exercises:
+            for updated_user_exercise in updated_user_exercises:
+                if user_exercise.id == updated_user_exercise['userExerciseId']:
+                    write_fields(user_exercise, 
+                    description=updated_user_exercise["description"],
+                    order=updated_user_exercise["order"],
+                    exercise_id=updated_user_exercise["exerciseId"])
+                    break
 
         return Response("User Workout Updated")
 
