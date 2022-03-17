@@ -1,3 +1,4 @@
+from cgitb import reset
 from users.models import CustomUser
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -12,6 +13,10 @@ from ..serializers import RoutineCategorySerializer, UserRoutineSerializer
 
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
+
+# FOR TESTING
+import time
+from django.db import connection, reset_queries
 
 # Create your views here.
 
@@ -65,36 +70,62 @@ class CreateUserWorkout(APIView):
         new_workout.save()
 
         for user_exercise in user_exercises:
-            print(user_exercise)
             exercise = Exercise.objects.get(pk=user_exercise['exerciseId'])
             new_workout.user_exercises.create(exercise=exercise, order=user_exercise['order'], description=user_exercise['description'])
 
         return Response("Workout successfully created")
 
+#TODO: Check if a new exercise has been added
+#TODO: Checks if field has been changed to reduce DB calls
 class UpdateUserWorkout(APIView):
     authentication_Classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
 
-    #TODO: Checks if field has been changed to reduce DB calls
-    def post(self, request):
+    def put(self, request):
+        reset_queries()
+
         id = request.data["userWorkoutId"]
         updated_name = request.data["name"]
         updated_user_exercises = request.data["userExercises"]
 
         # Update User Workout Fields
         user_workout = UserWorkout.objects.get(pk=id)
-        user_workout.name = updated_name
-        user_workout.save()
+        if user_workout.name != updated_name:
+            user_workout.name = updated_name
+            user_workout.save()
+
+        #Update User Exercise Fields
+        user_exercises = UserExercise.objects.filter(workout_id=user_workout.id)
+        for user_exercise in user_exercises:
+            for updated_user_exercise in updated_user_exercises:
+                if user_exercise.id == updated_user_exercise['userExerciseId']:
+                    should_save = False
+                    if user_exercise.exercise.id != updated_user_exercise['exerciseId']:
+                        should_save = True
+                        user_exercise.exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
+                    if user_exercise.order != updated_user_exercise['order']:
+                        should_save = True
+                        user_exercise.order = updated_user_exercise['order']
+                    if user_exercise.description != updated_user_exercise['description']:
+                        should_save = True
+                        user_exercise.description = updated_user_exercise['description']
+
+                    if should_save:
+                        user_exercise.save()
+                    break
 
         # Update User Workout Exercises
-        for updated_user_exercise in updated_user_exercises:
-            user_exercise = UserExercise.objects.get(pk=updated_user_exercise['userExerciseId'])
+        # for updated_user_exercise in updated_user_exercises:
+        #     user_exercise = UserExercise.objects.get(pk=updated_user_exercise['userExerciseId'])
 
-            exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
-            user_exercise.exercise = exercise
-            user_exercise.order = updated_user_exercise['order']
-            user_exercise.description = updated_user_exercise['description']
-            user_exercise.save()
+        #     exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
+        #     user_exercise.exercise = exercise
+        #     user_exercise.order = updated_user_exercise['order']
+        #     user_exercise.description = updated_user_exercise['description']
+        #     user_exercise.save()
+
+        for query in connection.queries:
+            print(str(query) + "\n")
 
         return Response("User Workout Updated")
 

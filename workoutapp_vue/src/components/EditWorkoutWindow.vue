@@ -90,7 +90,7 @@ export default {
             })
         },
         editWorkout() {
-            axios.post('/api/dashboard/workouts/update', {
+            axios.put('/api/dashboard/workouts/update', {
                 userWorkoutId: this.userWorkoutId,
                 name: this.currentWorkoutName,
                 userExercises: this.userExercises
