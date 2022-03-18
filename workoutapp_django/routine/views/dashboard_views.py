@@ -88,15 +88,41 @@ class UpdateUserWorkout(APIView):
             user_workout.save()
 
         # Update User Exercise Fields
+        # user_exercises = UserExercise.objects.filter(workout_id=id)
+        # for user_exercise in user_exercises:
+        #     updated = False
+        #     for updated_user_exercise in updated_user_exercises:
+        #         if user_exercise.id == updated_user_exercise['userExerciseId']:
+        #             write_fields(user_exercise, 
+        #             description=updated_user_exercise["description"],
+        #             order=updated_user_exercise["order"],
+        #             exercise_id=updated_user_exercise["exerciseId"])
+        #             updated = True
+        #             break
+        #     if not updated: # Add New Workout Exercise
+
         user_exercises = UserExercise.objects.filter(workout_id=id)
-        for user_exercise in user_exercises:
-            for updated_user_exercise in updated_user_exercises:
-                if user_exercise.id == updated_user_exercise['userExerciseId']:
-                    write_fields(user_exercise, 
-                    description=updated_user_exercise["description"],
-                    order=updated_user_exercise["order"],
-                    exercise_id=updated_user_exercise["exerciseId"])
-                    break
+        for updated_user_exercise in updated_user_exercises:
+            if 'userExerciseId' in updated_user_exercise:
+                for user_exercise in user_exercises:
+                    if updated_user_exercise['userExerciseId'] == user_exercise.id:
+                        write_fields(user_exercise, 
+                        description=updated_user_exercise["description"],
+                        order=updated_user_exercise["order"],
+                        exercise_id=updated_user_exercise["exerciseId"])
+                        updated = True
+                        break
+            else:
+                exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])
+                user_workout.user_exercises.create(exercise=exercise, order=updated_user_exercise['order'], 
+                                                    description=updated_user_exercise['description'])
+                
+            
+
+
+
+        # Add New User Exercises
+        
 
         return Response("User Workout Updated")
 

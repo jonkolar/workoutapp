@@ -28,6 +28,8 @@
 <script>
 import axios from 'axios'
 
+// TODO: Make getAllExercise 1 API call.
+
 export default {
     name: 'ExerciseInputGroup',
     props: ['description', 'order', 'exerciseId', 'currentExercise'],
