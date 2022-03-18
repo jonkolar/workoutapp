@@ -7,11 +7,8 @@
           <span>
             <i class="bi bi-x-square" @click="closeWindow"></i>
           </span>
-      </div>
-      <div class="modal-body">
-
-        <button @click="devShowExercises()">Dev Show Exercises</button>
-
+      </div>     
+    <div class="modal-body">
         <form>
             <div class="m-3">
                 <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Workout Name:</label>
@@ -20,10 +17,10 @@
 
             <ExerciseInputGroup v-for="userExercise in userExercises"
                 :currentExercise="userExercises.indexOf(userExercise) + 1"
+                :exerciseOptions="exerciseOptions"
                 v-model:description="userExercise.description"
                 v-model:order="userExercise.order"
                 v-model:exerciseId="userExercise.exerciseId" />
-
         </form>
 
         <div>
@@ -63,10 +60,12 @@ export default {
           workoutName: "",
           userExercises: [],
           errors: [],
+          exerciseOptions: []
       }
     },
     mounted() {
         this.fillCurrentWorkoutData()
+        this.getAllExerciseOptions()
     },
     methods: {
         closeWindow() {
@@ -100,9 +99,14 @@ export default {
                 this.$emit('closeWindowEmit')
             })
         },
-        devShowExercises() {
-            console.log(this.userExercises)
-        }
+        getAllExerciseOptions() {
+            axios.get('/api/public/workouts/exercises/all')
+                .then((response) => {
+                    for(let i = 0; i < response.data.length; i++){
+                        this.exerciseOptions.push(response.data[i])
+                    }
+                })
+        },
     }
 }
 </script>

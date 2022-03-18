@@ -32,26 +32,12 @@ import axios from 'axios'
 
 export default {
     name: 'ExerciseInputGroup',
-    props: ['description', 'order', 'exerciseId', 'currentExercise'],
+    props: ['description', 'order', 'exerciseId', 'currentExercise', 'exerciseOptions'],
     emits: ['update:description', 'update:order', 'update:exerciseId'],
     data() {
       return {
-          exerciseOptions: [],
           errors: [],
       }
     },
-    mounted() {
-        this.getAllExerciseOptions()
-    },
-    methods: {
-        getAllExerciseOptions() {
-            axios.get('/api/public/workouts/exercises/all')
-                .then((response) => {
-                    for(let i = 0; i < response.data.length; i++){
-                        this.exerciseOptions.push(response.data[i])
-                    }
-                })
-        },
-    }
 }
 </script>
