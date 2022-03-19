@@ -1,6 +1,6 @@
 <template>
 <div class="modal" tabindex="1" role="dialog">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Edit Workout</h5>
@@ -53,7 +53,7 @@ export default {
     components: {
         ExerciseInputGroup
     },
-    props: ['userWorkoutId', 'currentUserExercises', 'currentWorkoutName'],
+    props: ['userWorkoutId', 'currentUserExercises', 'currentWorkoutName', 'setConfirmWindow'],
     emits: ['editWorkoutEmit', 'closeWindowEmit'],
     data() {
       return {
@@ -68,8 +68,11 @@ export default {
         this.getAllExerciseOptions()
     },
     methods: {
-        closeWindow() {
-            this.$emit('closeWindowEmit')
+        async closeWindow() {
+            const ok = await this.setConfirmWindow("Discard Changes?", "Any made changes will not be saved", "Discard")
+            if (ok) {
+                this.$emit('closeWindowEmit')
+            }
         },
         fillCurrentWorkoutData() {
             for(let i=0; i<this.currentUserExercises.length; i++) {

@@ -26,7 +26,16 @@
                         @closeWindowEmit="toggleEditWorkoutWindow"
                         :userWorkoutId="editWorkoutWindow.currentWorkout.id"
                         :currentWorkoutName="editWorkoutWindow.currentWorkout.name"
-                        :currentUserExercises="editWorkoutWindow.currentWorkout.user_exercises" />
+                        :currentUserExercises="editWorkoutWindow.currentWorkout.user_exercises"
+                        :setConfirmWindow="setConfirmWindow" />
+
+  <ConfirmWindow v-if="confirmWindow.showWindow"
+                :title="confirmWindow.title"
+                :bodyText="confirmWindow.bodyText"
+                :buttonText="confirmWindow.buttonText"
+                :resolvePromise="confirmWindow.resolvePromise"
+                :rejectPromise="confirmWindow.rejectPromise"
+                :closeWindow="() => {confirmWindow.showWindow = false}" />
 
 </template>
 
@@ -35,12 +44,13 @@ import axios from 'axios'
 import WorkoutCard from '@/components/WorkoutCard'
 import CreateWorkoutWindow from '@/components/CreateWorkoutWindow'
 import EditWorkoutWindow from '@/components/EditWorkoutWindow'
+import ConfirmWindow from '@/components/ConfirmWindow'
 import jwt_decode from "jwt-decode";
 
 export default {
   name: 'Routine',
   components: {
-    WorkoutCard, CreateWorkoutWindow, EditWorkoutWindow
+    WorkoutCard, CreateWorkoutWindow, EditWorkoutWindow, ConfirmWindow
   },
   data () {
       return {
@@ -57,6 +67,14 @@ export default {
         editWorkoutWindow: {
           showWindow: false,
           currentWorkout: {}
+        },
+        confirmWindow: {
+          showWindow: false,
+          title: "",
+          bodyText: "",
+          buttonText: "",
+          resolvePromise: undefined,
+          rejectPromise: undefined
         }
       }
   },
@@ -89,6 +107,17 @@ export default {
     setEditWorkoutWindowCurrentWorkout(workout) {
       this.editWorkoutWindow.currentWorkout = workout
       this.toggleEditWorkoutWindow()
+    },
+    setConfirmWindow(title, bodyText, buttonText) {
+      this.confirmWindow.title = title
+      this.confirmWindow.bodyText = bodyText
+      this.confirmWindow.buttonText = buttonText
+      this.confirmWindow.showWindow = true  
+  
+      return new Promise((resolve, reject) => {
+        this.confirmWindow.resolvePromise = resolve
+        this.confirmWindow.rejectPromise = reject
+      })
     }
   }
 }
