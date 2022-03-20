@@ -57,7 +57,6 @@ export default {
     emits: ['editWorkoutEmit', 'closeWindowEmit'],
     data() {
       return {
-          workoutName: "",
           userExercises: [],
           errors: [],
           exerciseOptions: []
@@ -68,11 +67,12 @@ export default {
         this.getAllExerciseOptions()
     },
     methods: {
-        async closeWindow() {
-            const ok = await this.setConfirmWindow("Discard Changes?", "Any made changes will not be saved", "Discard")
-            if (ok) {
-                this.$emit('closeWindowEmit')
-            }
+        closeWindow() {
+            this.setConfirmWindow("Discard Changes?", "Any made changes will not be saved", "Discard", (answer) => {
+                if (answer) {
+                    this.$emit('closeWindowEmit')
+                }
+            })
         },
         fillCurrentWorkoutData() {
             for(let i=0; i<this.currentUserExercises.length; i++) {

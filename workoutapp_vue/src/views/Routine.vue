@@ -33,8 +33,7 @@
                 :title="confirmWindow.title"
                 :bodyText="confirmWindow.bodyText"
                 :buttonText="confirmWindow.buttonText"
-                :resolvePromise="confirmWindow.resolvePromise"
-                :rejectPromise="confirmWindow.rejectPromise"
+                :callback="confirmWindow.callback"
                 :closeWindow="() => {confirmWindow.showWindow = false}" />
 
 </template>
@@ -73,8 +72,7 @@ export default {
           title: "",
           bodyText: "",
           buttonText: "",
-          resolvePromise: undefined,
-          rejectPromise: undefined
+          callback: undefined
         }
       }
   },
@@ -108,16 +106,12 @@ export default {
       this.editWorkoutWindow.currentWorkout = workout
       this.toggleEditWorkoutWindow()
     },
-    setConfirmWindow(title, bodyText, buttonText) {
+    setConfirmWindow(title, bodyText, buttonText, callback) {
       this.confirmWindow.title = title
       this.confirmWindow.bodyText = bodyText
       this.confirmWindow.buttonText = buttonText
-      this.confirmWindow.showWindow = true  
-  
-      return new Promise((resolve, reject) => {
-        this.confirmWindow.resolvePromise = resolve
-        this.confirmWindow.rejectPromise = reject
-      })
+      this.confirmWindow.callback = callback
+      this.confirmWindow.showWindow = true
     }
   }
 }

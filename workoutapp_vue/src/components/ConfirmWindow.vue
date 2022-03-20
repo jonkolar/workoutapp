@@ -14,14 +14,14 @@
 <script>
 export default {
     name: 'ConfirmWindow',
-    props: ['buttonText', 'title', 'bodyText', 'closeWindow', 'resolvePromise', 'rejectPromise'],
+    props: ['buttonText', 'title', 'bodyText', 'closeWindow', 'callback'],
     methods: {
         confirm() {
-            this.resolvePromise(true)
+            this.callback(true)
             this.closeWindow()
         },
         cancel() {
-            this.resolvePromise(false)
+            this.callback(false)
             this.closeWindow()
         }
     }
