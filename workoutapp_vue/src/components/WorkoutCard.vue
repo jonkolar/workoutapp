@@ -14,8 +14,10 @@
     </ol>
     <div v-if="isOwner" id="workout-edit-options" class="mt-3">
 
-      <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 20px" @click="setEditWorkoutWindowCurrentWorkout(workout)"></i>
-      <i class="pointerButton bi bi-trash-fill ms-2" style="font-size: 20px; color: red;"></i>
+      <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 20px" 
+        @click="setEditWorkoutWindowCurrentWorkout(workout)"></i>
+      <i class="pointerButton bi bi-trash-fill ms-2" style="font-size: 20px; color: red;" @click="destroyWorkout">
+      </i>
     </div>
   </div>
 </div>
@@ -23,9 +25,33 @@
 
 
 <script>
+import axios from 'axios'
+
 export default {
     name: 'WorkoutCard',
-    props: ['workout', 'isOwner', 'setEditWorkoutWindowCurrentWorkout'],
+    props: ['workout', 'isOwner', 'setEditWorkoutWindowCurrentWorkout', 'setConfirmWindow'],
+    emits: ['deletedWorkoutEmit'],
+    methods: {
+      destroyWorkout() {
+            const deleteWorkoutCallback = (answer) => {
+                if(answer){
+                    axios.delete('/api/dashboard/workouts/delete', { data: {
+                        userWorkoutId: this.workout.id
+                    }})
+                    .then((response) => {
+                        this.$emit('closeWindowEmit')
+                        this.$emit('deletedWorkoutEmit')
+                    })
+                }
+            }
+
+            this.setConfirmWindow("Delete Workout?", 
+                                    "Once a workout is deleted it cannot be recovered." + 
+                                    "Are you sure you'd like to delete this workout?",
+                                    "Confirm Deletion", deleteWorkoutCallback)
+                                    
+        },
+    }
 }
 </script>
 

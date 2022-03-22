@@ -8,7 +8,9 @@
   </div>
 
   <WorkoutCard v-for="userWorkout in routine.user_workouts" :key="userWorkout.id"
+               @deletedWorkoutEmit="fetchRoutineData"
                :setEditWorkoutWindowCurrentWorkout="setEditWorkoutWindowCurrentWorkout"
+               :setConfirmWindow="setConfirmWindow"
                :workout="userWorkout" 
                :isOwner="isOwner" />
 

@@ -71,7 +71,15 @@ class CreateUserWorkout(APIView):
 
         return Response("Workout successfully created")
 
-#TODO: Check if a new exercise has been added
+class DeleteUserWorkout(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request):
+        user_workout_id = request.data["userWorkoutId"]
+        UserWorkout.objects.filter(id=user_workout_id).delete()
+        return Response("Workout Deleted")
+
 class UpdateUserWorkout(APIView):
     authentication_Classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
@@ -104,13 +112,6 @@ class UpdateUserWorkout(APIView):
                 user_workout.user_exercises.create(exercise=exercise, order=updated_user_exercise['order'], 
                                                     description=updated_user_exercise['description'])
                 
-            
-
-
-
-        # Add New User Exercises
-        
-
         return Response("User Workout Updated")
 
 def write_fields(obj, **kwargs):
