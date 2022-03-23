@@ -20,6 +20,7 @@
 
             <ExerciseInputGroup v-for="userExercise in userExercises"
                 :currentExercise="userExercises.indexOf(userExercise) + 1"
+                :exerciseOptions="exerciseOptions"
                 v-model:description="userExercise.description"
                 v-model:order="userExercise.order"
                 v-model:exerciseId="userExercise.exerciseId" />
@@ -63,13 +64,16 @@ export default {
           workoutName: "",
           userExercises: [],
           errors: [],
+          exerciseOptions: []
       }
     },
     mounted() {
-        
+        this.$root.toggleIsModalOpen(true)
+        this.getAllExerciseOptions()
     },
     methods: {
         closeWindow() {
+            this.$root.toggleIsModalOpen(false)
             this.$emit('closeWindowEmit')
         },
         addExercise() {
@@ -96,9 +100,14 @@ export default {
                 })
             }
         },
-        devShowExercises() {
-            console.log(this.userExercises)
-        }
+        getAllExerciseOptions() {
+            axios.get('/api/public/workouts/exercises/all')
+                .then((response) => {
+                    for(let i = 0; i < response.data.length; i++){
+                        this.exerciseOptions.push(response.data[i])
+                    }
+                })
+        },
     }
 }
 </script>

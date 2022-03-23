@@ -114,6 +114,7 @@ export default {
       this.confirmWindow.buttonText = buttonText
       this.confirmWindow.callback = callback
       this.confirmWindow.showWindow = true
+      this.$root.toggleIsModalOpen(true)
     }
   }
 }

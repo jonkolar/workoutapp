@@ -1,5 +1,5 @@
 <template>
-  <div id="confirm-window" class="position-absolute top-50 start-50 translate-middle bg-dark text-light rounded">
+  <div id="confirm-window" class="bg-dark text-light rounded">
     <div id="confirm-window-content" class="d-flex flex-column align-items-center m-3">
         <h4>{{ title }}</h4>
         <p>{{ bodyText }}</p>
@@ -31,5 +31,10 @@ export default {
 <style>
 #confirm-window {
   z-index: 2000;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px; 
 }
 </style>

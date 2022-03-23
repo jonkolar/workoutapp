@@ -34,6 +34,7 @@ export default {
     methods: {
       destroyWorkout() {
             const deleteWorkoutCallback = (answer) => {
+                this.$root.toggleIsModalOpen(false)
                 if(answer){
                     axios.delete('/api/dashboard/workouts/delete', { data: {
                         userWorkoutId: this.workout.id

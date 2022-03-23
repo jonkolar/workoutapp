@@ -13,7 +13,7 @@
   <!-- LOADING ICON --> 
   <div v-if="isLoading" class="spinner-border" role="status"></div>
   <!-- END LOADING ICON -->
-  <router-view/>
+  <router-view />
 </template>
 
 <script>
@@ -27,6 +27,7 @@ export default {
     return {
       isLoading: false,
       showMobileMenu: false,
+      isModalOpen: false
     }
   },
   mixins: [],
@@ -49,8 +50,11 @@ export default {
   },
   methods: {
     toggleIsLoading(bool) {
-      console.log()
       this.isLoading = bool
+    },
+    toggleIsModalOpen(bool) {
+      this.IsModalOpen = bool
+      if (bool) { $('body').css('overflow', 'hidden'); } else { $('body').css('overflow', 'auto'); }
     },
     logout() {
         axios.defaults.headers.common["Authorization"] = ""
@@ -88,5 +92,9 @@ export default {
 
 .pointerButton:hover {
   cursor: pointer;
+}
+
+.modal-open {
+  overflow: hidden;
 }
 </style>

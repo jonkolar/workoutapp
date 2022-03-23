@@ -8,7 +8,7 @@
             <i class="bi bi-x-square" @click="closeWindow"></i>
           </span>
       </div>     
-    <div class="modal-body">
+    <div class="modal-body" id="edit-workout-window-body">
         <form>
             <div class="m-3">
                 <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Workout Name:</label>
@@ -63,14 +63,19 @@ export default {
       }
     },
     mounted() {
+        this.$root.toggleIsModalOpen(true)
         this.fillCurrentWorkoutData()
         this.getAllExerciseOptions()
     },
     methods: {
         closeWindow() {
+            $('.modal-body').css('overflow', 'hidden');
             this.setConfirmWindow("Discard Changes?", "Any made changes will not be saved", "Discard", (answer) => {
                 if (answer) {
+                    this.$root.toggleIsModalOpen(false)
                     this.$emit('closeWindowEmit')
+                } else {
+                    $('.modal-body').css('overflow', 'auto');
                 }
             })
         },
