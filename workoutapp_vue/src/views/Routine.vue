@@ -1,6 +1,23 @@
 <template>
   <div>
-    <h1>{{routine.name}}</h1>
+    <div class="d-flex justify-content-center align-items-center">
+      <h1>{{routine.name}}</h1>
+
+      <i v-if="!routine.is_private"
+           class="bi bi-eye-fill ms-2 h2"
+           data-bs-toggle="tooltip"
+           data-bs-placement="right"
+           title="Public routine"
+           v-tooltip></i>
+
+      <i v-else
+          class="bi bi-eye-slash-fill ms-2 h2"
+          data-bs-toggle="tooltip"
+          data-bs-placement="right"
+          title="Private routine"
+          v-tooltip></i>
+    </div>
+
     <p>By: {{routine.user.username}}</p>
     <div class="bg-light d-inline-block p-2">
       <span class="badge bg-dark ms-1" v-for="category in routine.categories" :key="category.id">{{category.name}}</span>
@@ -14,12 +31,18 @@
                :workout="userWorkout" 
                :isOwner="isOwner" />
 
-  <div class="mt-4" v-if="isOwner">
-    <i class="pointerButton bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleCreateWorkoutWindow"></i>
+  <div class="mt-4 d-flex justify-content-center">
+    <div class="ms-1" v-if="isOwner">
+      <i class="pointerButton bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleCreateWorkoutWindow"></i>
+    </div>
+    <div class="ms-1" v-if="isOwner">
+      <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 40px" @click="toggleEditRoutineWindow"></i>
+    </div>
   </div>
 
   <CreateWorkoutWindow v-if="showCreateWorkoutWindow" 
                         :routineId="routine.id"
+                        :setConfirmWindow="setConfirmWindow"
                         @createWorkoutEmit="fetchRoutineData"
                         @closeWindowEmit="toggleCreateWorkoutWindow" />
 
@@ -30,6 +53,12 @@
                         :currentWorkoutName="editWorkoutWindow.currentWorkout.name"
                         :currentUserExercises="editWorkoutWindow.currentWorkout.user_exercises"
                         :setConfirmWindow="setConfirmWindow" />
+
+  <EditRoutineWindow v-if="editRoutineWindow.showWindow"
+                     :routine="routine"
+                     :setConfirmWindow="setConfirmWindow"
+                     @closeWindowEmit="toggleEditRoutineWindow" 
+                     @updateRoutineEmit="fetchRoutineData"/>
 
   <ConfirmWindow v-if="confirmWindow.showWindow"
                 :title="confirmWindow.title"
@@ -45,13 +74,14 @@ import axios from 'axios'
 import WorkoutCard from '@/components/WorkoutCard'
 import CreateWorkoutWindow from '@/components/CreateWorkoutWindow'
 import EditWorkoutWindow from '@/components/EditWorkoutWindow'
+import EditRoutineWindow from '@/components/EditRoutineWindow'
 import ConfirmWindow from '@/components/ConfirmWindow'
 import jwt_decode from "jwt-decode";
 
 export default {
   name: 'Routine',
   components: {
-    WorkoutCard, CreateWorkoutWindow, EditWorkoutWindow, ConfirmWindow
+    WorkoutCard, CreateWorkoutWindow, EditWorkoutWindow, EditRoutineWindow, ConfirmWindow
   },
   data () {
       return {
@@ -75,6 +105,9 @@ export default {
           bodyText: "",
           buttonText: "",
           callback: undefined
+        },
+        editRoutineWindow: {
+          showWindow: false
         }
       }
   },
@@ -103,6 +136,9 @@ export default {
     },
     toggleEditWorkoutWindow() {
       this.editWorkoutWindow.showWindow = !this.editWorkoutWindow.showWindow
+    },
+    toggleEditRoutineWindow() {
+      this.editRoutineWindow.showWindow = !this.editRoutineWindow.showWindow
     },
     setEditWorkoutWindowCurrentWorkout(workout) {
       this.editWorkoutWindow.currentWorkout = workout

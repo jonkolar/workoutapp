@@ -57,7 +57,7 @@ export default {
     components: {
         ExerciseInputGroup
     },
-    props: ['routineId'],
+    props: ['routineId', 'setConfirmWindow'],
     emits: ['createWorkoutEmit', 'closeWindowEmit'],
     data() {
       return {
@@ -73,8 +73,16 @@ export default {
     },
     methods: {
         closeWindow() {
-            this.$root.toggleIsModalOpen(false)
-            this.$emit('closeWindowEmit')
+            $('.modal-body').css('overflow', 'hidden');
+            this.setConfirmWindow("Discard New Workout", "New workout will not be saved and you will have to " +
+                                    "start again from scratch", "Discard", (answer) => {
+                if (answer) {
+                    this.$root.toggleIsModalOpen(false)
+                    this.$emit('closeWindowEmit')
+                } else {
+                    $('.modal-body').css('overflow', 'auto');
+                }
+            })
         },
         addExercise() {
             this.userExercises.push({

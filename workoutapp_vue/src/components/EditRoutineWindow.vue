@@ -1,15 +1,11 @@
 <template>
-<div>
-    <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="toggleShowWindow"></i>
-</div>
-
-<div v-if="showWindow" class="modal" tabindex="1" role="dialog">
+<div class="modal" tabindex="1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">New Routine</h5>
+        <h5 class="modal-title">Edit Routine</h5>
           <span>
-            <i class="bi bi-x-square" @click="toggleShowWindow"></i>
+            <i class="bi bi-x-square" @click="closeWindow"></i>
           </span>
       </div>
       <div class="modal-body">
@@ -52,8 +48,8 @@
         <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="createRoutine">Create Routine</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="toggleShowWindow">Close</button>
+            <button type="button" class="btn btn-primary" @click="editRoutine">Save Changes</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeWindow">Close</button>
         </div>
 
       </div>
@@ -62,16 +58,15 @@
   </div>
   <br>
 </div>
-
-
 </template>
 
 <script>
 import axios from 'axios'
 
 export default {
-    name: 'CreateRoutineWindow',
-    emits: ['createRoutineEmit'],
+    name: 'EditRoutineWindow',
+    props: ['routine', 'setConfirmWindow'],
+    emit: ['closeWindowEmit', 'updateRoutineEmit'],
     data() {
       return {
           routineName: "",
@@ -79,16 +74,42 @@ export default {
           routineCategoryOptions: [],
           selectedRoutineCategories: [],
           errors: [],
-          showWindow: false
       }
     },
     mounted() {
+        this.fillCurrentRoutineData(this.routine)
         this.getAllCategoryOptions()
-        console.log(this.routineId)
     },
     methods: {
-        toggleShowWindow() {
-            this.showWindow = !this.showWindow
+        closeWindow() {
+            $('.modal-body').css('overflow', 'hidden');
+            this.setConfirmWindow("Discard Changes?", "Any made changes will not be saved", "Discard", (answer) => {
+                if (answer) {
+                    this.$root.toggleIsModalOpen(false)
+                    this.$emit('closeWindowEmit')
+                } else {
+                    $('.modal-body').css('overflow', 'auto');
+                }
+            })
+        },
+        editRoutine() {
+            this.errors = []
+
+            if (this.routineName == "") { this.errors.push("Routine must have a name" ) }
+            if (this.selectedRoutineCategories.length <= 0) { this.errors.push("Routine must have at least 1 category" ) }
+
+            if (this.errors.length <= 0) { // No Errors
+                axios.put('/api/dashboard/routines/update', {
+                    routineId: this.routine.id,
+                    routineName: this.routineName,
+                    isPrivate: this.isPrivate,
+                    routineCategories: this.selectedRoutineCategories
+                })
+                .then((response) => {
+                    this.$emit('updateRoutineEmit')
+                    this.$emit('closeWindowEmit')
+                })
+            }
         },
         getAllCategoryOptions() {
             axios.get('/api/public/routines/categories/all')
@@ -107,6 +128,14 @@ export default {
         removeSelectedCategory(deletedCategory) {
             this.selectedRoutineCategories.splice(this.selectedRoutineCategories.indexOf(deletedCategory), 1)
         },
+        fillCurrentRoutineData(routine) {
+            this.routineName = this.routine.name
+            this.isPrivate = this.routine.is_private
+
+            routine.categories.forEach((category, index) => {
+                this.selectedRoutineCategories.push(category.name)
+            });
+        }
     }
 }
 </script>

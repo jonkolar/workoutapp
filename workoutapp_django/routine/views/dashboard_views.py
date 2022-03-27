@@ -1,4 +1,6 @@
 from cgitb import reset
+from email.errors import CloseBoundaryNotFoundDefect
+from xml.dom.minidom import ReadOnlySequentialNamedNodeMap
 from users.models import CustomUser
 
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -14,15 +16,6 @@ from ..serializers import RoutineCategorySerializer, UserRoutineSerializer
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer
 
-# Create your views here.
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def GetUserWorkouts(request, username, workout_id):
-#     user = CustomUser.objects.get(username=username)
-#     workout = Workout.objects.get(user_id=user.id)
-#     workout_serialized = WorkoutSerializer(workout)
-#     return Response(workout_serialized.data)
 
 class GetAllUserRoutines(APIView):
     authentication_Classes = (TokenAuthentication)
@@ -32,6 +25,7 @@ class GetAllUserRoutines(APIView):
         user_routines = UserRoutine.objects.filter(user_id=request.user.id)
         user_routines_serialized = UserRoutineSerializer(user_routines, many=True)
         return Response(user_routines_serialized.data)
+
 
 class CreateUserRoutine(APIView):
     authentication_Classes = (TokenAuthentication)
@@ -52,6 +46,58 @@ class CreateUserRoutine(APIView):
 
         return Response("Routine successfully created")
 
+
+class UpdateUserRoutine(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request):
+        routine_id = request.data["routineId"]
+        updated_routine_name = request.data["routineName"]
+        updated_routine_categories = request.data["routineCategories"]
+        updated_routine_isPrivate = request.data["isPrivate"]
+
+        routine = UserRoutine.objects.get(pk=routine_id)
+
+        # Update Name
+        if updated_routine_name != routine.name:
+            routine.name = updated_routine_name
+        
+        # Update isPrivate
+        if updated_routine_isPrivate != routine.is_private:
+            routine.is_private = updated_routine_isPrivate
+
+        # Check Update Categories
+        categories_to_add = []
+        categories_that_exist = []
+        categories_to_delete = []
+
+        current_categories = routine.categories.all()
+        for updated_category in updated_routine_categories:
+            updated_routine_category = RoutineCategory.objects.get(name=updated_category)
+            if updated_routine_category not in current_categories:
+                categories_to_add.append(updated_routine_category)
+            else:
+                categories_that_exist.append(updated_routine_category)
+
+        for category in current_categories:
+            if category not in categories_that_exist and category not in categories_to_add:
+                categories_to_delete.append(category)   
+        
+        # Add Categories
+        for category in categories_to_add:
+            routine.categories.add(category)
+
+        # Delete Categories
+        for category in categories_to_delete:
+            routine.categories.remove(category)
+
+        routine.save()
+
+
+        return Response("Routine successfully created")
+
+
 class CreateUserWorkout(APIView):
     authentication_Classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
@@ -71,6 +117,7 @@ class CreateUserWorkout(APIView):
 
         return Response("Workout successfully created")
 
+
 class DeleteUserWorkout(APIView):
     authentication_Classes = (TokenAuthentication)
     permission_classes = (IsAuthenticated,)
@@ -79,6 +126,7 @@ class DeleteUserWorkout(APIView):
         user_workout_id = request.data["userWorkoutId"]
         UserWorkout.objects.filter(id=user_workout_id).delete()
         return Response("Workout Deleted")
+
 
 class UpdateUserWorkout(APIView):
     authentication_Classes = (TokenAuthentication)
@@ -113,6 +161,8 @@ class UpdateUserWorkout(APIView):
                                                     description=updated_user_exercise['description'])
                 
         return Response("User Workout Updated")
+
+# Helper methods:
 
 def write_fields(obj, **kwargs):
         should_save = False

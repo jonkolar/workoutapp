@@ -16,7 +16,8 @@
 
       <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 20px" 
         @click="setEditWorkoutWindowCurrentWorkout(workout)"></i>
-      <i class="pointerButton bi bi-trash-fill ms-2" style="font-size: 20px; color: red;" @click="destroyWorkout">
+      <i class="pointerButton bi bi-trash-fill ms-2" style="font-size: 20px; color: red;" 
+        @click="destroyWorkout">
       </i>
     </div>
   </div>

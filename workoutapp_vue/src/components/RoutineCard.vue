@@ -13,7 +13,7 @@
            v-tooltip></i>
 
         <i v-else
-           class="bi bi-eye-slash-fill"
+           class="bi bi-eye-slash-fill ms-1"
            data-bs-toggle="tooltip"
            data-bs-placement="right"
            title="Private routine"
