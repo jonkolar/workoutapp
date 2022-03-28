@@ -5,6 +5,7 @@ urlpatterns = [
     path('dashboard/routines/all', dashboard_views.GetAllUserRoutines.as_view()),
     path('dashboard/routines/create', dashboard_views.CreateUserRoutine.as_view()),
     path('dashboard/routines/update', dashboard_views.UpdateUserRoutine.as_view()),
+    path('dashboard/routines/delete', dashboard_views.DeleteUserRoutine.as_view()),
     path('dashboard/workouts/create', dashboard_views.CreateUserWorkout.as_view()),
     path('dashboard/workouts/update', dashboard_views.UpdateUserWorkout.as_view()),
     path('dashboard/workouts/delete', dashboard_views.DeleteUserWorkout.as_view()),

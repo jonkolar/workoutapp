@@ -71,7 +71,7 @@ import axios from 'axios'
 
 export default {
     name: 'CreateRoutineWindow',
-    emits: ['createRoutineEmit'],
+    emits: ['createRoutineEmit', 'closeWindowEmit'],
     data() {
       return {
           routineName: "",
@@ -84,7 +84,6 @@ export default {
     },
     mounted() {
         this.getAllCategoryOptions()
-        console.log(this.routineId)
     },
     methods: {
         toggleShowWindow() {
@@ -97,6 +96,24 @@ export default {
                         this.routineCategoryOptions.push(response.data[i])
                     }
                 })
+        },
+        createRoutine() {
+            this.errors = []
+
+            if (this.routineName == "") { this.errors.push("Routine must have a name" ) }
+            if (this.selectedRoutineCategories.length <= 0) { this.errors.push("Routine must have at least 1 category" ) }
+
+            if (this.errors.length <= 0) { // No Errors
+                axios.post('/api/dashboard/routines/create', {
+                    routineName: this.routineName,
+                    isPrivate: this.isPrivate,
+                    routineCategories: this.selectedRoutineCategories
+                })
+                .then((response) => {
+                    this.$emit('createRoutineEmit')
+                    window.location.replace("/routine/" + response.data.id)
+                })
+            }
         },
         addSelectedCategory(event) {
             if (!this.selectedRoutineCategories.includes(event.target.value)) {

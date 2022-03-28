@@ -44,7 +44,8 @@ class CreateUserRoutine(APIView):
             category = RoutineCategory.objects.filter(name=category)
             new_routine.categories.add(category[0])
 
-        return Response("Routine successfully created")
+        new_routine_json = UserRoutineSerializer(new_routine).data
+        return Response(new_routine_json)
 
 
 class UpdateUserRoutine(APIView):
@@ -96,6 +97,16 @@ class UpdateUserRoutine(APIView):
 
 
         return Response("Routine successfully created")
+    
+
+class DeleteUserRoutine(APIView):
+    authentication_Classes = (TokenAuthentication)
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request):
+        id = request.data['routineId']
+        UserRoutine.objects.get(pk=id).delete()
+        return Response("Routine Deleted")
 
 
 class CreateUserWorkout(APIView):
@@ -124,7 +135,7 @@ class DeleteUserWorkout(APIView):
 
     def delete(self, request):
         user_workout_id = request.data["userWorkoutId"]
-        UserWorkout.objects.filter(id=user_workout_id).delete()
+        UserWorkout.objects.get(pk=user_workout_id).delete()
         return Response("Workout Deleted")
 
 
@@ -153,7 +164,6 @@ class UpdateUserWorkout(APIView):
                         description=updated_user_exercise["description"],
                         order=updated_user_exercise["order"],
                         exercise_id=updated_user_exercise["exerciseId"])
-                        updated = True
                         break
             else: # Add New User Exercise
                 exercise = Exercise.objects.get(pk=updated_user_exercise['exerciseId'])

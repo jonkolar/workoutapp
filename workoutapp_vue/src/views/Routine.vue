@@ -38,6 +38,7 @@
     <div class="ms-1" v-if="isOwner">
       <i class="pointerButton bi bi-gear-fill ms-2" style="font-size: 40px" @click="toggleEditRoutineWindow"></i>
     </div>
+    <i class="pointerButton bi bi-trash-fill ms-2" style="font-size: 40px; color: red;" @click="destroyRoutine"></i>
   </div>
 
   <CreateWorkoutWindow v-if="showCreateWorkoutWindow" 
@@ -139,6 +140,24 @@ export default {
     },
     toggleEditRoutineWindow() {
       this.editRoutineWindow.showWindow = !this.editRoutineWindow.showWindow
+    },
+    destroyRoutine() {
+      const deleteRoutineCallback = (answer) => {
+        this.$root.toggleIsModalOpen(false)
+          if(answer){
+            axios.delete('/api/dashboard/routines/delete', { data: {
+              routineId: this.routine.id
+            }})
+            .then((response) => {
+                window.location.replace("/dashboard/routines")
+            })
+          }
+        }
+
+      this.setConfirmWindow("Delete Routine?", 
+                              "Once a routine is deleted it cannot be recovered." + 
+                              "Are you sure you'd like to delete this routine",
+                              "Confirm Deletion", deleteRoutineCallback)
     },
     setEditWorkoutWindowCurrentWorkout(workout) {
       this.editWorkoutWindow.currentWorkout = workout
