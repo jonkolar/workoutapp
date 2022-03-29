@@ -3,8 +3,9 @@
   <div class="container d-flex flex-column align-items-center">
     <h3>{{workout.name}}</h3>      
     
-    <ol class="exercise-list list-group list-group-numbered">
-      <li class="exercise-list-item list-group-item d-flex justify-content-between align-items-start" v-for="userExercise in workout.user_exercises">
+    <ol class="exercise-list list-group">
+      <li class="exercise-list-item list-group-item d-flex justify-content-between align-items-start" v-for="userExercise in userExercisesSorted">
+        <p>{{userExercise.order}}.</p>
         <div class="ms-2 me-auto">
           <div class="fw-bold">{{userExercise.exercise.name}}</div>
           <p class="m-0">{{userExercise.description}}</p>
@@ -32,6 +33,11 @@ export default {
     name: 'WorkoutCard',
     props: ['workout', 'isOwner', 'setEditWorkoutWindowCurrentWorkout', 'setConfirmWindow'],
     emits: ['deletedWorkoutEmit'],
+    computed: {
+        userExercisesSorted: function() {
+            return this.workout.user_exercises.sort((a, b) => a.order - b.order)
+        }
+    },
     methods: {
       destroyWorkout() {
             const deleteWorkoutCallback = (answer) => {

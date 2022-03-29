@@ -39,10 +39,12 @@ class CreateUserRoutine(APIView):
 
         new_routine = UserRoutine.objects.create(user=request.user, name=new_routine_name, is_private=new_routine_isPrivate)
         new_routine.save()
-        
+
+        categories_list = []
         for category in new_routine_categories:
-            category = RoutineCategory.objects.filter(name=category)
-            new_routine.categories.add(category[0])
+            categories_list.append(RoutineCategory.objects.get(name=category).id)
+
+        new_routine.categories.add(*categories_list)
 
         new_routine_json = UserRoutineSerializer(new_routine).data
         return Response(new_routine_json)
@@ -60,13 +62,12 @@ class UpdateUserRoutine(APIView):
 
         routine = UserRoutine.objects.get(pk=routine_id)
 
-        # Update Name
         if updated_routine_name != routine.name:
             routine.name = updated_routine_name
-        
-        # Update isPrivate
         if updated_routine_isPrivate != routine.is_private:
             routine.is_private = updated_routine_isPrivate
+
+        routine.save()
 
         # Check Update Categories
         categories_to_add = []
@@ -85,18 +86,10 @@ class UpdateUserRoutine(APIView):
             if category not in categories_that_exist and category not in categories_to_add:
                 categories_to_delete.append(category)   
         
-        # Add Categories
-        for category in categories_to_add:
-            routine.categories.add(category)
-
-        # Delete Categories
-        for category in categories_to_delete:
-            routine.categories.remove(category)
-
-        routine.save()
-
-
-        return Response("Routine successfully created")
+        routine.categories.add(*categories_to_add)
+        routine.categories.remove(*categories_to_delete)
+        
+        return Response("Routine successfully updated")
     
 
 class DeleteUserRoutine(APIView):

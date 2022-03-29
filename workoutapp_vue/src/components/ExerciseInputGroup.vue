@@ -1,6 +1,11 @@
 <template>
     <div class="m-3 p-3 bg-light">
-        <h5>Exercise {{currentExercise}}</h5>
+        <div class="d-flex justify-content-between">
+            <h6 class="align-self-center">Exercise {{currentExercise}}:</h6>
+            <i class="pointerButton bi bi-trash-fill" style="font-size: 20px; color: red;" 
+                @click="$emit('removeExerciseEmit', currentExercise)">
+            </i>
+        </div>
         <div class="m-2">
             <label for="workout-exercise-select">Exercise:</label>
             <select class="form-select" :id="'workout-exercise-select' + currentExercise" required
@@ -33,7 +38,7 @@ import axios from 'axios'
 export default {
     name: 'ExerciseInputGroup',
     props: ['description', 'order', 'exerciseId', 'currentExercise', 'exerciseOptions'],
-    emits: ['update:description', 'update:order', 'update:exerciseId'],
+    emits: ['update:description', 'update:order', 'update:exerciseId', 'removeExerciseEmit'],
     data() {
       return {
           errors: [],

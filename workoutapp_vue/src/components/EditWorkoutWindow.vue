@@ -15,9 +15,10 @@
                 <input type="text" v-model="currentWorkoutName" class="form-control" id="workout-name" required>
             </div>
 
-            <ExerciseInputGroup v-for="userExercise in userExercises"
+            <ExerciseInputGroup v-for="userExercise in userExercisesSorted"
                 :currentExercise="userExercises.indexOf(userExercise) + 1"
                 :exerciseOptions="exerciseOptions"
+                @removeExerciseEmit="removeExercise"
                 v-model:description="userExercise.description"
                 v-model:order="userExercise.order"
                 v-model:exerciseId="userExercise.exerciseId" />
@@ -62,6 +63,11 @@ export default {
           exerciseOptions: []
       }
     },
+    computed: {
+        userExercisesSorted: function() {
+            return this.userExercises.sort((a, b) => a.order - b.order)
+        }
+    },
     mounted() {
         this.$root.toggleIsModalOpen(true)
         this.fillCurrentWorkoutData()
@@ -95,6 +101,9 @@ export default {
                 order: this.userExercises.length + 1,
                 description: "",
             })
+        },
+        removeExercise(exerciseNumber) {
+            this.userExercises.splice(exerciseNumber - 1, 1)
         },
         editWorkout() {
             axios.put('/api/dashboard/workouts/update', {
