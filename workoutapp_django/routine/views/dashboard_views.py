@@ -147,6 +147,16 @@ class UpdateUserWorkout(APIView):
             user_workout.name = updated_name
             user_workout.save()
 
+        user_exercises = UserExercise.objects.filter(workout_id=id)
+
+        # Delete Removed User Exercises
+        exercises_to_delete = []
+        for user_exercise in user_exercises:
+            if not any(updated_user_exercise['userExerciseId'] == user_exercise.id for updated_user_exercise in updated_user_exercises):
+                exercises_to_delete.append(user_exercise)
+        if exercises_to_delete:
+            UserExercise.objects.filter(id__in=[e.id for e in exercises_to_delete]).delete()
+
         # Update User Exercise Fields
         user_exercises = UserExercise.objects.filter(workout_id=id)
         for updated_user_exercise in updated_user_exercises:
