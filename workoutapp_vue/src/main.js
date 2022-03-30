@@ -10,6 +10,30 @@ axios.defaults.baseURL = 'http://localhost:8000';
 
 axios.defaults.withCredentials = true;
 
+axios.interceptors.response.use((response, error) => {
+    if (error) {
+        console.log("Error: " + error)
+        return error
+    }
+    return response
+})
+
+// Retry requests on failure
+const retryWrapper = (axios) => {
+    const maxTries = 5
+    let tryCount = 0
+
+    axios.interceptors.response.use((response) => { return response }, (error) => {
+        if (tryCount < 10) {
+            tryCount++
+            return new Promise((resolve) => {
+                resolve(axios(error.config))
+            })
+        } 
+        return Promise.reject(error)
+    })
+}
+
 axios.interceptors.request.use(async (config) => {
     if (store.getters['getIsAuthenticated']) {
         let tokens = store.getters['getTokens']
@@ -20,7 +44,6 @@ axios.interceptors.request.use(async (config) => {
         let refreshTokenExpiryTime = new Date(decodedRefreshToken.exp * 1000)
 
         if (accessTokenExpiryTime <= Date.now() && refreshTokenExpiryTime > Date.now()){ // Access Token is expired AND Refresh Token is NOT expired
-            console.log("REQUESTING NEW ACCESS TOKEN")
             const newAccessToken = await retrieveNewAccessToken(tokens['refreshToken'])
 
             config.headers['Authorization'] = "Bearer " + newAccessToken
@@ -47,6 +70,8 @@ async function retrieveNewAccessToken(refreshToken) {
 }
 
 const app = createApp(App)
+
+retryWrapper(axios)
 
 app.directive("tooltip", {
     mounted(el, binding) {
