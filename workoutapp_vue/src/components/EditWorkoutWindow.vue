@@ -28,7 +28,7 @@
             <i class="bi bi-plus-square-fill bi-3x" style="font-size: 40px" @click="addExercise"></i>
         </div>
 
-        <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div>
+        <div class="alert alert-danger p-1 m-3" role="alert" v-for="error in errors" :key="error"> {{error}} </div> 
 
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" @click="editWorkout">Save Changes</button>
@@ -106,6 +106,16 @@ export default {
             this.userExercises.splice(exerciseNumber - 1, 1)
         },
         editWorkout() {
+            this.errors = [];
+
+            this.userExercises.forEach((exercise) => {
+                if (exercise.exerciseId <= 0) {
+                    this.errors.push(`Must select an exercise for exercise ${this.userExercises.indexOf(exercise) + 1}`)
+                }
+            })
+
+            if (this.errors.length > 0) { return; }
+
             axios.put('/api/dashboard/workouts/update', {
                 userWorkoutId: this.userWorkoutId,
                 name: this.currentWorkoutName,

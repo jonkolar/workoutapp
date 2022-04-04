@@ -9,9 +9,6 @@
           </span>
       </div>
       <div class="modal-body">
-
-        <button @click="devShowExercises()">Dev Show Exercises</button>
-
         <form>
             <div class="m-3">
                 <label for="workout-name" class="form-label" placeholder="Enter your workout name...">Workout Name:</label>
@@ -101,7 +98,15 @@ export default {
             this.userExercises.splice(exerciseNumber - 1, 1)
         },
         createWorkout() {
-            this.errors = []
+            this.errors = [];
+
+            this.userExercises.forEach((exercise) => {
+                if (exercise.exerciseId <= 0) {
+                    this.errors.push(`Must select an exercise for exercise ${this.userExercises.indexOf(exercise) + 1}`)
+                }
+            })
+
+            if (this.errors.length > 0) { return; }
 
             if (this.workoutName == "") { this.errors.push("Workout must have a name" ) }
 

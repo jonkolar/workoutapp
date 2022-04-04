@@ -39,10 +39,5 @@ export default {
     name: 'ExerciseInputGroup',
     props: ['description', 'order', 'exerciseId', 'currentExercise', 'exerciseOptions'],
     emits: ['update:description', 'update:order', 'update:exerciseId', 'removeExerciseEmit'],
-    data() {
-      return {
-          errors: [],
-      }
-    },
 }
 </script>
