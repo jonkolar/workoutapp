@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import SignUp from '../views/SignUp.vue'
 import Login from '../views/Login.vue'
 import Routine from '../views/Routine.vue'
+import Explore from '../views/Explore.vue'
 import DashboardRoutines from '../views/DashboardRoutines.vue'
 import store from '@/store'
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/explore',
+    name: 'Explore',
+    component: Explore
   },
   {
     path: '/dashboard/routines',
