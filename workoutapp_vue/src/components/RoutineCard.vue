@@ -4,7 +4,6 @@
     <div class="card-header table-responsive">
       <h4 class="m-1">
         <router-link class="pointerButton text-decoration-none text-dark" :to="{ path: `/routine/${routine.id}` }">{{routine.name}}</router-link>
-
         <i v-if="!routine.is_private"
            class="bi bi-eye-fill ms-1"
            data-bs-toggle="tooltip"
@@ -18,7 +17,10 @@
            data-bs-placement="right"
            title="Private routine"
            v-tooltip></i>
-      </h4> 
+      </h4>
+      <div>
+        <small>By: {{routine.user.username}}</small>
+      </div>
       <span class="badge bg-dark ms-1" v-bind="category.id" v-for="category in routine.categories" :key="category.id">{{category.name}}</span>
     </div>
     <small v-if="routine.user_workouts.length <= 0" class="text-black-50 fst-italic">No Workouts</small>

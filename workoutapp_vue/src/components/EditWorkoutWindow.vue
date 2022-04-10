@@ -68,7 +68,7 @@ export default {
             return this.userExercises.sort((a, b) => a.order - b.order)
         }
     },
-    mounted() {
+    async mounted() {
         this.$root.toggleIsModalOpen(true)
         this.fillCurrentWorkoutData()
         this.getAllExerciseOptions()

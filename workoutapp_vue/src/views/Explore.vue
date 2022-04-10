@@ -5,21 +5,54 @@
                 <div class="search"><input type="text" class="form-control" placeholder="Search for a routine..."> 
                     <button class="btn btn-primary"><i class="bi bi-search"></i></button>
                 </div>
+                <div class="container-fluid d-flex justify-content-center flex-wrap mt-5">
+                    <RoutineCard 
+                    v-for="routine in userRoutines"
+                    v-bind:key="routine.id"
+                    v-bind:routine="routine" />
+                </div>
             </div>
         </div>
+        <button v-if="!all_shown" type="button" class="btn btn-primary mt-5" @click="fetchUserRoutinesCurrentPage">Show More</button>
     </div>
 </template>
 
 <script>
-export default {
-  name: 'Explore',
-  components: {
-    data () {
-      return {
+import axios from 'axios'
+import RoutineCard from '@/components/RoutineCard'
 
-      }
+export default {
+    name: 'Explore',
+    components: {
+        RoutineCard
+    },
+    data () {
+        return {
+            userRoutines: [],
+            currentPage: 0,
+            all_shown: false
+        }
+    },
+    mounted() {
+        this.$root.toggleIsLoading(true)
+
+        this.fetchUserRoutinesCurrentPage()
+
+        this.$root.toggleIsLoading(false)
+    },
+    methods: {
+        async fetchUserRoutinesCurrentPage() {
+            this.currentPage++
+            await axios.get(`/api/public/routines/all/${this.currentPage}`)
+            .then((response) => {
+                let routines = response.data['routines']
+                for(let i = 0; i < routines.length; i++){
+                    this.userRoutines.push(routines[i])
+                }
+                if (!response.data['has_more']) { this.all_shown = true }
+            })
+        },
     }
-  }
 }
 </script>
 
